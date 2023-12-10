@@ -73,13 +73,15 @@ export default function NavBar({ children }) {
   return (
     <>
       <div className=" flex flex-col border-2 max-w-full min-h-full">
-        <nav className="flex max-w-full sm:z-10 h-12 sm:h-16 p-1 box-content justify-between items-center bg-gray-800 fixed top-0 left-0 right-0">
+        <nav className="flex max-w-full z-20 md:z-10 h-12 sm:h-16 p-1 box-content justify-between items-center bg-gray-800 fixed top-0 left-0 right-0">
           <div className="h-12 w-12 sm:h-14 sm:w-14 ml-10 rounded-full bg-white">
+            <Link to="/">
             <img
               className="h-full w-full object-cover object-center"
               src="/images/cart-logo.png"
               alt="logo"
             />
+            </Link>
           </div>
 
           {/* web layout */}

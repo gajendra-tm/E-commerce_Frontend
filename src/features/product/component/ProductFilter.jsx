@@ -1,158 +1,177 @@
 import React, { useState, useEffect } from "react";
 import { useAnimate, stagger, motion } from "framer-motion";
 import ProductList from "./ProductList";
-
-const products = [
-  {
-    id: 1,
-    name: "Basic Tee",
-    href: "#",
-    imageSrc:
-      "https://tailwindui.com/img/ecommerce-images/product-page-01-related-product-01.jpg",
-    imageAlt: "Front of men's Basic Tee in black.",
-    price: "$35",
-    color: "Black",
-  },
-  {
-    id: 2,
-    name: "Basic Tee",
-    href: "#",
-    imageSrc:
-      "https://tailwindui.com/img/ecommerce-images/product-page-01-related-product-01.jpg",
-    imageAlt: "Front of men's Basic Tee in black.",
-    price: "$35",
-    color: "Black",
-  },
-
-  {
-    id: 3,
-    name: "Basic Tee",
-    href: "#",
-    imageSrc:
-      "https://tailwindui.com/img/ecommerce-images/product-page-01-related-product-01.jpg",
-    imageAlt: "Front of men's Basic Tee in black.",
-    price: "$35",
-    color: "Black",
-  },
-
-  {
-    id: 4,
-    name: "Basic Tee",
-    href: "#",
-    imageSrc:
-      "https://tailwindui.com/img/ecommerce-images/product-page-01-related-product-01.jpg",
-    imageAlt: "Front of men's Basic Tee in black.",
-    price: "$35",
-    color: "Black",
-  },
-  {
-    id: 5,
-    name: "Basic Tee",
-    href: "#",
-    imageSrc:
-      "https://tailwindui.com/img/ecommerce-images/product-page-01-related-product-01.jpg",
-    imageAlt: "Front of men's Basic Tee in black.",
-    price: "$35",
-    color: "Black",
-  },
-
-  {
-    id: 6,
-    name: "Basic Tee",
-    href: "#",
-    imageSrc:
-      "https://tailwindui.com/img/ecommerce-images/product-page-01-related-product-01.jpg",
-    imageAlt: "Front of men's Basic Tee in black.",
-    price: "$35",
-    color: "Black",
-  },
-  {
-    id: 7,
-    name: "Basic Tee",
-    href: "#",
-    imageSrc:
-      "https://tailwindui.com/img/ecommerce-images/product-page-01-related-product-01.jpg",
-    imageAlt: "Front of men's Basic Tee in black.",
-    price: "$35",
-    color: "Black",
-  },
-
-  {
-    id: 8,
-    name: "Basic Tee",
-    href: "#",
-    imageSrc:
-      "https://tailwindui.com/img/ecommerce-images/product-page-01-related-product-01.jpg",
-    imageAlt: "Front of men's Basic Tee in black.",
-    price: "$35",
-    color: "Black",
-  },
-
-  {
-    id: 9,
-    name: "Basic Tee",
-    href: "#",
-    imageSrc:
-      "https://tailwindui.com/img/ecommerce-images/product-page-01-related-product-01.jpg",
-    imageAlt: "Front of men's Basic Tee in black.",
-    price: "$35",
-    color: "Black",
-  },
-  {
-    id: 10,
-    name: "Basic Tee",
-    href: "#",
-    imageSrc:
-      "https://tailwindui.com/img/ecommerce-images/product-page-01-related-product-01.jpg",
-    imageAlt: "Front of men's Basic Tee in black.",
-    price: "$35",
-    color: "Black",
-  },
-];
+import { useDispatch, useSelector } from "react-redux";
+import { fetchAllProductsAsync, fetchProductsByFiltersAsync, seletAllProducts } from "../productSlice";
 
 const sortOptions = [
-  { name: "Most Popular", href: "#", current: true },
-  { name: "Best Rating", href: "#", current: false },
-  { name: "Newest", href: "#", current: false },
-  { name: "Price: Low to High", href: "#", current: false },
-  { name: "Price: High to Low", href: "#", current: false },
+  { name: "Best Rating", order: "desc", sort:"rating", current: false },
+  { name: "Price: Low to High", order: "asc", sort:"price", current: false },
+  { name: "Price: High to Low", order: "desc", sort:"price", current: false },
 ];
 
 const filters = [
   {
-    id: "color",
-    name: "color",
+    id: "brands",
+    name: "Brands",
     options: [
-      { value: "white", label: "White", checked: false },
-      { value: "yellow", label: "Yellow", checked: true },
-      { value: "blue", label: "Blue", checked: false },
-      { value: "brown", label: "Brown", checked: false },
-      { value: "black", label: "Black", checked: false },
-      { value: "gold", label: "Gold", checked: false },
+      { value: "Apple", label: "Apple", checked: false },
+      { value: "Samsung", label: "Samsung", checked: false },
+      { value: "OPPO", label: "OPPO", checked: false },
+      { value: "Huawei", label: "Huawei", checked: false },
+      {
+        value: "Microsoft Surface",
+        label: "Microsoft Surface",
+        checked: false,
+      },
+      { value: "Infinix", label: "Infinix", checked: false },
+      { value: "HP Pavilion", label: "HP Pavilion", checked: false },
+      {
+        value: "Impression of Acqua Di Gio",
+        label: "Impression of Acqua Di Gio",
+        checked: false,
+      },
+      { value: "Royal_Mirage", label: "Royal Mirage", checked: false },
+      {
+        value: "Fog Scent Xpressio",
+        label: "Fog Scent Xpressio",
+        checked: false,
+      },
+      { value: "Al Munakh", label: "Al Munakh", checked: false },
+      { value: "Lord - Al-Rehab", label: "Lord - Al-Rehab", checked: false },
+      { value: "L'Oreal Paris", label: "L'Oreal Paris", checked: false },
+      { value: "Hemani Tea", label: "Hemani Tea", checked: false },
+      { value: "Dermive", label: "Dermive", checked: false },
+      { value: "ROREC White Rice", label: "ROREC White Rice", checked: false },
+      { value: "Fair & Clear", label: "Fair & Clear", checked: false },
+      { value: "Saaf & Khaas", label: "Saaf & Khaas", checked: false },
+      { value: "Bake Parlor Big", label: "Bake Parlor Big", checked: false },
+      {
+        value: "Baking Food Items",
+        label: "Baking Food Items",
+        checked: false,
+      },
+      { value: "fauji", label: "fauji", checked: false },
+      { value: "Dry Rose", label: "Dry Rose", checked: false },
+      { value: "Boho Decor", label: "Boho Decor", checked: false },
+      { value: "Flying Wooden", label: "Flying Wooden", checked: false },
+      { value: "LED Lights", label: "LED Lights", checked: false },
+      { value: "luxury palace", label: "luxury palace", checked: false },
+      { value: "Golden", label: "Golden", checked: false },
+      {
+        value: "Furniture Bed Set",
+        label: "Furniture Bed Set",
+        checked: false,
+      },
+      { value: "Ratttan Outdoor", label: "Ratttan Outdoor", checked: false },
+      { value: "Kitchen Shelf", label: "Kitchen Shelf", checked: false },
+      { value: "Multi Purpose", label: "Multi Purpose", checked: false },
+      { value: "AmnaMart", label: "AmnaMart", checked: false },
+      {
+        value: "Professional Wear",
+        label: "Professional Wear",
+        checked: false,
+      },
+      { value: "Soft Cotton", label: "Soft Cotton", checked: false },
+      { value: "Top Sweater", label: "Top Sweater", checked: false },
+      {
+        value: "RED MICKY MOUSE..",
+        label: "RED MICKY MOUSE..",
+        checked: false,
+      },
+      { value: "Digital Printed", label: "Digital Printed", checked: false },
+      { value: "Ghazi Fabric", label: "Ghazi Fabric", checked: false },
+      { value: "IELGY", label: "IELGY", checked: false },
+      { value: "IELGY fashion", label: "IELGY fashion", checked: false },
+      {
+        value: "Synthetic Leather",
+        label: "Synthetic Leather",
+        checked: false,
+      },
+      {
+        value: "Sandals Flip Flops",
+        label: "Sandals Flip Flops",
+        checked: false,
+      },
+      { value: "Maasai Sandals", label: "Maasai Sandals", checked: false },
+      { value: "Arrivals Genuine", label: "Arrivals Genuine", checked: false },
+      { value: "Vintage Apparel", label: "Vintage Apparel", checked: false },
+      { value: "FREE FIRE", label: "FREE FIRE", checked: false },
+      { value: "The Warehouse", label: "The Warehouse", checked: false },
+      { value: "Sneakers", label: "Sneakers", checked: false },
+      { value: "Rubber", label: "Rubber", checked: false },
+      { value: "Naviforce", label: "Naviforce", checked: false },
+      { value: "SKMEI 9117", label: "SKMEI 9117", checked: false },
+      { value: "Strap Skeleton", label: "Strap Skeleton", checked: false },
+      { value: "Stainless", label: "Stainless", checked: false },
+      { value: "Eastern Watches", label: "Eastern Watches", checked: false },
+      { value: "Luxury Digital", label: "Luxury Digital", checked: false },
+      { value: "Watch Pearls", label: "Watch Pearls", checked: false },
+      { value: "Bracelet", label: "Bracelet", checked: false },
+      { value: "LouisWill", label: "LouisWill", checked: false },
+      { value: "Copenhagen Luxe", label: "Copenhagen Luxe", checked: false },
+      { value: "Steal Frame", label: "Steal Frame", checked: false },
+      { value: "Darojay", label: "Darojay", checked: false },
+      {
+        value: "Fashion Jewellery",
+        label: "Fashion Jewellery",
+        checked: false,
+      },
+      { value: "Cuff Butterfly", label: "Cuff Butterfly", checked: false },
+      {
+        value: "Designer Sun Glasses",
+        label: "Designer Sun Glasses",
+        checked: false,
+      },
+      { value: "mastar watch", label: "mastar watch", checked: false },
+      { value: "Car Aux", label: "Car Aux", checked: false },
+      { value: "W1209 DC12V", label: "W1209 DC12V", checked: false },
+      { value: "TC Reusable", label: "TC Reusable", checked: false },
+      { value: "Neon LED Light", label: "Neon LED Light", checked: false },
+      {
+        value: "METRO 70cc Motorcycle - MR70",
+        label: "METRO 70cc Motorcycle - MR70",
+        checked: false,
+      },
+      { value: "BRAVE BULL", label: "BRAVE BULL", checked: false },
+      { value: "shock absorber", label: "shock absorber", checked: false },
+      { value: "JIEPOLLY", label: "JIEPOLLY", checked: false },
+      { value: "Xiangle", label: "Xiangle", checked: false },
+      {
+        value: "lightingbrilliance",
+        label: "lightingbrilliance",
+        checked: false,
+      },
+      { value: "Ifei Home", label: "Ifei Home", checked: false },
+      { value: "DADAWU", label: "DADAWU", checked: false },
+      { value: "YIOSI", label: "YIOSI", checked: false },
     ],
   },
 
   {
     id: "category",
-    name: "category",
+    name: "Category",
     options: [
-      { value: "new arrival", label: "New Arrival", checked: false },
-      { value: "sale", label: "Sale", checked: false },
-      { value: "travel", label: "Travel", checked: true },
-      { value: "organization", label: "Organization", checked: false },
-      { value: "accessories", label: "Accessories", checked: false },
-    ],
-  },
-
-  {
-    id: "size",
-    name: "size",
-    options: [
-      { value: "2l", label: "2L", checked: false },
-      { value: "6l", label: "6L", checked: false },
-      { value: "8l", label: "8L", checked: false },
-      { value: "10l", label: "10L", checked: true },
-      { value: "12l", label: "12L", checked: false },
+      { value: "smartphones", label: "smartphones", checked: false },
+      { value: "laptops", label: "laptops", checked: false },
+      { value: "fragrances", label: "fragrances", checked: false },
+      { value: "skincare", label: "skincare", checked: false },
+      { value: "groceries", label: "groceries", checked: false },
+      { value: "home-decoration", label: "home decoration", checked: false },
+      { value: "furniture", label: "furniture", checked: false },
+      { value: "tops", label: "tops", checked: false },
+      { value: "womens-dresses", label: "womens dresses", checked: false },
+      { value: "womens-shoes", label: "womens shoes", checked: false },
+      { value: "mens-shirts", label: "mens shirts", checked: false },
+      { value: "mens-shoes", label: "mens shoes", checked: false },
+      { value: "mens-watches", label: "mens watches", checked: false },
+      { value: "womens-watches", label: "womens watches", checked: false },
+      { value: "womens-bags", label: "womens bags", checked: false },
+      { value: "womens-jewellery", label: "womens jewellery", checked: false },
+      { value: "sunglasses", label: "sunglasses", checked: false },
+      { value: "automotive", label: "automotive", checked: false },
+      { value: "motorcycle", label: "motorcycle", checked: false },
+      { value: "lighting", label: "lighting", checked: false },
     ],
   },
 ];
@@ -268,10 +287,30 @@ export default function ProductFilter() {
   const [isOpen, setIsOpen] = useState(false);
   const [mobileIsOpen, setMobileIsOpen] = useState(false);
   const [filterIsOpen, setFilterIsOpen] = useState(false);
+  const [filter, setFilter] = useState({});
 
   const scope = useMenuAnimation(isOpen);
   const mobilescope = useMobileAnimation(mobileIsOpen);
   const filterscope = useFilterAnimation(filterIsOpen);
+
+  const dispatch = useDispatch();
+  const products = useSelector(seletAllProducts);
+
+  const handleSort = (e,sortOption)=>{
+    const newFilter = { ...filter,_sort:sortOption.sort, _order:sortOption.order};
+    setFilter(newFilter);
+    dispatch(fetchProductsByFiltersAsync(newFilter))
+  }
+
+  const handleFilter = (e, section, option) => {
+    const newFilter = { ...filter, [section.id]: option.value };
+    setFilter(newFilter);
+    dispatch(fetchProductsByFiltersAsync(newFilter));
+  };
+
+  useEffect(() => {
+    dispatch(fetchAllProductsAsync());
+  }, [dispatch]);
 
   return (
     <>
@@ -284,7 +323,7 @@ export default function ProductFilter() {
           </div>
 
           {/* sort&filter section mobile layout */}
-          <div className="fixed block sm:hidden bottom-0 left-0 w-full h-12 bg-red-600">
+          <div className="fixed block sm:hidden z-50 bottom-0 left-0 w-full h-12 bg-red-600">
             <div className="flex justify-evenly relative w-full h-full items-center">
               <div ref={mobilescope}>
                 <div>
@@ -327,6 +366,7 @@ export default function ProductFilter() {
                     return (
                       <li
                         key={sortIndex}
+                        onClick={(e)=>handleSort(e,sortOption)}
                         className="hover:text-gray-400 rounded-lg px-2 cursor-pointer w-44"
                       >
                         {sortOption.name}
@@ -392,15 +432,16 @@ export default function ProductFilter() {
                               >
                                 <input
                                   id={`${section.id}-${optionIdx}`}
-                                  name={`${section.name}`}
+                                  name={section.name}
                                   type="checkbox"
                                   defaultValue={option.value}
                                   defaultChecked={option.checked}
+                                  onChange={(e) => handleFilter(e, section, option)}
                                   className="h-4 w-4 rounded border-gray-300  focus:ring-2 ring-blue-500 ring-offset-2"
                                 />
                                 <label
                                   htmlFor={`${section.id}-${optionIdx}`}
-                                  className="ml-3 text-sm  text-gray-100 leading-6 font-medium"
+                                  className="ml-3 text-sm truncate  text-gray-100 leading-6 font-medium"
                                 >
                                   {option.label}
                                 </label>
@@ -441,13 +482,14 @@ export default function ProductFilter() {
                 pointerEvents: isOpen ? "auto" : "none",
                 clipPath: "inset(10% 50% 90% 50% round 10px)",
               }}
-              className="flex flex-col justify-center items-center absolute top-8 right-3 h-48 w-44 p-2 box-content border-2 bg-white drop-shadow-2xl rounded-lg text-lg leading-loose"
+              className="flex flex-col justify-center items-center absolute top-8 right-3 w-48 p-2 box-content border-2 bg-white drop-shadow-2xl rounded-lg text-lg leading-loose"
             >
               {sortOptions.map((sortOption, sortIndex) => {
                 return (
                   <li
                     key={sortIndex}
-                    className="hover:bg-gray-100 rounded-lg px-2 cursor-pointer w-40"
+                    onClick={(e)=>handleSort(e,sortOption)}
+                    className="hover:bg-gray-100 rounded-lg px-2 cursor-pointer w-full"
                   >
                     {sortOption.name}
                   </li>
@@ -476,15 +518,16 @@ export default function ProductFilter() {
                         >
                           <input
                             id={`${section.id}-${optionIdx}`}
-                            name={`${section.name}`}
+                            name={section.name}
                             type="checkbox"
                             defaultValue={option.value}
                             defaultChecked={option.checked}
+                            onChange={(e) => handleFilter(e, section, option)}
                             className="h-4 w-4 rounded border-gray-300  focus:ring-2 ring-blue-500 ring-offset-2"
                           />
                           <label
                             htmlFor={`${section.id}-${optionIdx}`}
-                            className="ml-3 text-sm text-gray-600 leading-6 font-normal"
+                            className="ml-3 text-sm truncate text-gray-600 leading-6 font-normal"
                           >
                             {option.label}
                           </label>
@@ -496,7 +539,7 @@ export default function ProductFilter() {
               );
             })}
           </div>
-          <div className=" flex justify-evenly flex-wrap w-full overflow-y-auto">
+          <div className=" flex justify-evenly md:justify-start flex-wrap w-full max-h-screen overflow-y-auto">
             {products.map((product) => {
               return <ProductList key={product.id} product={product} />;
             })}

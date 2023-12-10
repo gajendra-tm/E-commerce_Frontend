@@ -436,7 +436,7 @@ export default function CheckOut() {
         </div>
 
         {/* cart items web layout */}
-        <div className="hidden md:block p-4 col-start-3 col-end-5 max-w-full min-h-screen bg-white">
+        <div className="hidden md:block p-4 col-start-3 col-end-5 max-w-full h-fit bg-white">
           <h1 className="text-lg font-medium">Order summary</h1>
           <div>
             {products.map((product) => {

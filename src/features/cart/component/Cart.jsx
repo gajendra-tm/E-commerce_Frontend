@@ -56,7 +56,7 @@ const products = [
 export default function Cart() {
   return (
     <>
-      <div className="flex flex-col justify-center items-center p-20 max-w-full min-h-screen">
+      <div className="flex flex-col justify-center items-center p-20 max-w-full min-h-full">
         <div className="p-4 w-full sm:w-9/12 bg-white">
           <div className="flex">
             <h1 className="text-2xl sm:text-3xl font-bold mb-2">Cart</h1>

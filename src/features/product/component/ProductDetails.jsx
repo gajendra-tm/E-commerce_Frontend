@@ -222,7 +222,7 @@ export default function ProductDetails() {
                         <button
                           className={`w-12 h-12 xl:w-16 xl:h-16 m-2 hover:bg-gray-200 focus:border-blue-700 text-sm font-medium border-2 rounded-full border-dashed border-gray-700 ${
                             size.inStock === false
-                              ? "cursor-not-allowed opacity-50 hover:bg-transparent focus:border-gray-700 "
+                              ? "cursor-not-allowed line-through opacity-50 hover:bg-transparent focus:border-gray-700 "
                               : ""
                           }`}
                         >
