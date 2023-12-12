@@ -4,9 +4,9 @@ import { Link } from "react-router-dom";
 export default function ProductList({product}) {
   return (
     <>
-      <div className="w-40 h-58 lg:w-60 lg:h-96 mb-3 md:mx-2 box-content p-1 border-2 rounded-lg hover:bg-gray-300 ">
+      <div className="w-40 h-58 lg:w-56 lg:h-72 mb-3 md:mx-2 box-content p-1 border-2 rounded-sm hover:bg-gray-300 ">
         <Link to="/product-details">
-        <div className="w-full h-44 lg:w-full lg:h-80 mb-2">
+        <div className="w-full h-44 lg:w-full lg:h-56 mb-4">
           <img
             className="w-full h-full rounded-lg object-cover object-center"
             src={product.thumbnail}
