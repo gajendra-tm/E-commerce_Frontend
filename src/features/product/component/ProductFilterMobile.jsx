@@ -40,45 +40,45 @@ function useSortAnimation(sortIsOpen) {
 }
 
 //filter animation
-function useFilterAnimation(filterIsOpen) {
-  const [filterscope, animate] = useAnimate();
+// function useFilterAnimation(filterIsOpen) {
+//   const [filterscope, animate] = useAnimate();
 
-  useEffect(() => {
-    animate(
-      "#filter_animation",
-      {
-        clipPath: filterIsOpen
-          ? "inset(0% 0% 0% 0% round 10px)"
-          : "inset(100% 0% 0% 0% round 0px)",
-      },
-      {
-        type: "spring",
-        bounce: 0,
-        duration: 0.5,
-      }
-    );
+//   useEffect(() => {
+//     animate(
+//       "#filter_animation",
+//       {
+//         clipPath: filterIsOpen
+//           ? "inset(0% 0% 0% 0% round 10px)"
+//           : "inset(100% 0% 0% 0% round 0px)",
+//       },
+//       {
+//         type: "spring",
+//         bounce: 0,
+//         duration: 0.5,
+//       }
+//     );
 
-    animate(
-      "input,label",
-      filterIsOpen
-        ? { opacity: 1, scale: 1, filter: "blur(0px)" }
-        : { opacity: 0, scale: 0.3, filter: "blur(20px)" },
-      {
-        duration: 0.2,
-        delay: filterIsOpen ? staggerMobileItems : 0,
-      }
-    );
-  }, [filterIsOpen]);
+//     animate(
+//       "input,label",
+//       filterIsOpen
+//         ? { opacity: 1, scale: 1, filter: "blur(0px)" }
+//         : { opacity: 0, scale: 0.3, filter: "blur(20px)" },
+//       {
+//         duration: 0.2,
+//         delay: filterIsOpen ? staggerMobileItems : 0,
+//       }
+//     );
+//   }, [filterIsOpen]);
 
-  return filterscope;
-}
+//   return filterscope;
+// }
 
 export default function ProductFilterMobile({ propsList }) {
   const [sortIsOpen, setSortIsOpen] = useState(false);
   const [filterIsOpen, setFilterIsOpen] = useState(false);
 
   const sortscope = useSortAnimation(sortIsOpen);
-  const filterscope = useFilterAnimation(filterIsOpen);
+  // const filterscope = useFilterAnimation(filterIsOpen);
 
   return (
     <>
@@ -135,13 +135,17 @@ export default function ProductFilterMobile({ propsList }) {
               })}
             </ul>
           </div>
-          <div className="inline-block" ref={filterscope}>
-            <div className="ml-0 sm:ml-48">
-              <motion.button
+          {/* ref={filterscope} */}
+          <div className="inline-block" >
+            <div className="ml-0 sm:ml-48"
+                onClick={() => setFilterIsOpen(!filterIsOpen)}
+                >
+                  {/* there is an issue with framer animation which needs to be corrected later */}
+              {/* <motion.button
                 whileTap={{ scale: 0.97 }}
                 className="text-base sm:text-xl"
                 onClick={() => setFilterIsOpen(!filterIsOpen)}
-              >
+              > */}
                 Filter
                 <svg
                   className="inline ml-1"
@@ -153,13 +157,14 @@ export default function ProductFilterMobile({ propsList }) {
                 >
                   <path d="M21 4V6H20L15 13.5V22H9V13.5L4 6H3V4H21ZM6.4037 6L11 12.8944V20H13V12.8944L17.5963 6H6.4037Z"></path>
                 </svg>
-              </motion.button>
+              {/* </motion.button> */}
             </div>
-            <div
-              style={{
-                pointerEvents: filterIsOpen ? "auto" : "none",
-                clipPath: "inset(10% 50% 90% 50% round 10px)",
-              }}
+
+           { filterIsOpen ? <div
+              // style={{
+              //   pointerEvents: filterIsOpen ? "auto" : "none",
+              //   clipPath: "inset(10% 50% 90% 50% round 10px)",
+              // }}
               id="filter_animation"
               className="absolute bottom-0 left-0 h-screen overflow-x-auto p-1  bg-gray-800 w-full text-white"
             >
@@ -187,7 +192,8 @@ export default function ProductFilterMobile({ propsList }) {
                       {section.options.map((option, optionIdx) => {
                         return (
                           <div
-                            key={option.value}
+                          id="filteropen"
+                            key={optionIdx}
                             className="flex justify-start items-center w-40"
                           >
                             <input
@@ -214,7 +220,7 @@ export default function ProductFilterMobile({ propsList }) {
                   </span>
                 );
               })}
-            </div>
+            </div>:""}
           </div>
         </div>
       </div>
