@@ -1,6 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchProductsByIdAsync, selectProductsById } from "../productSlice";
+import { useParams } from "react-router-dom";
 
-const product = {
+const products = {
   name: "Basic Tee 6-Pack",
   price: "$192",
   href: "#",
@@ -69,8 +72,12 @@ const product = {
 };
 
 export default function ProductDetails() {
-  const [selectedColor, setSelectedColor] = useState(product.colors[0].name);
+  const [selectedColor, setSelectedColor] = useState(products.colors[0].name);
   const [currentIndex, setCurrentIdex] = useState(0);
+
+  const product = useSelector(selectProductsById);
+  const dispatch = useDispatch();
+  const params = useParams();
 
   const handleRightClick = () => {
     setCurrentIdex((prevIndex) => {
@@ -84,9 +91,14 @@ export default function ProductDetails() {
     });
   };
 
+  useEffect(()=>{
+dispatch(fetchProductsByIdAsync(params.id))
+  },[dispatch,params.id])
+
   return (
     <>
         <div className="xl:grid grid-rows-2 max-w-full min-h-full ">
+
           {/* images mobile layout */}
           <div className="xl:hidden w-full h-[36rem] relative mt-2 box-border rounded-xl overflow-hidden">
             <div className="w-full h-full ">
@@ -103,11 +115,11 @@ export default function ProductDetails() {
                   <path d="M13.1714 12.0007L8.22168 7.05093L9.63589 5.63672L15.9999 12.0007L9.63589 18.3646L8.22168 16.9504L13.1714 12.0007Z"></path>
                 </svg>
               </button>
-              <img
-                src={product.images[currentIndex].src}
-                alt={product.images[currentIndex].alt}
+              {product.id && <img
+                src={product.images[currentIndex]}
+                alt={product.title}
                 className="w-full h-full object-cover object-center"
-              />
+              />}
               <button
                 className="absolute top-2/4 left-1 rounded-full border-2 bg-amber-300 hover:bg-amber-200"
                 onClick={handleLeftClick}
@@ -125,47 +137,47 @@ export default function ProductDetails() {
           </div>
 
           {/* images web layout */}
-          <div className="hidden xl:grid grid-cols-3">
+          {product.id && <div className="hidden xl:grid grid-cols-3">
             <div className="col-span-1 row-span-2 m-3 rounded-2xl overflow-hidden">
               <img
-                src={product.images[0].src}
-                alt={product.images[0].alt}
-                className="w-full h-full object-cover object-center"
-              />
+                src={product.images[0]}
+                alt={product.title}
+                className="w-full h-full object-fill object-center"
+                />
             </div>
             <div className="col-span-1 row-span-1 col-start-2 row-end-1 m-3 rounded-2xl overflow-hidden">
               <img
-                src={product.images[1].src}
-                alt={product.images[1].alt}
-                className="w-full h-full object-cover object-center"
+                src={product.images[1]}
+                alt={product.title}
+                className="w-full h-full object-fill object-center"
               />
             </div>
             <div className="col-span-1 row-span-1 col-start-2 row-end-2 m-3 rounded-2xl overflow-hidden">
               <img
-                src={product.images[2].src}
-                alt={product.images[2].alt}
-                className="w-full h-full object-cover object-center"
+                src={product.images[2]}
+                alt={product.title}
+                className="w-full h-full object-fill object-center"
               />
             </div>
             <div className="col-span-1 row-span-2 m-3 rounded-2xl overflow-hidden">
               <img
-                src={product.images[3].src}
-                alt={product.images[3].alt}
-                className="w-full h-full object-cover object-center"
+                src={product.images[3]}
+                alt={product.title}
+                className="w-full h-full object-fill object-center"
               />
             </div>
-          </div>
+          </div>}
 
           {/* product details */}
           <div className="xl:grid grid-cols-3 mt-10">
             <div className="col-span-2 p-3 h-4/5 box-content xl:border-r-2 border-gray-300">
               <div className="mb-10">
-                <h1 className="text-3xl font-bold mb-5">{product.name}</h1>
+                <h1 className="text-3xl font-bold mb-5">{product.title}</h1>
                 <p className="text-lg font-normal">{product.description}</p>
               </div>
               <ol className="text-base font-medium list-disc list-inside">
                 Highlights
-                {product.highlights.map((highlight, highlightIdx) => {
+                {products.highlights.map((highlight, highlightIdx) => {
                   return (
                     <li
                       key={highlightIdx}
@@ -179,7 +191,7 @@ export default function ProductDetails() {
               <div className="mt-10">
                 <h3 className="text-base font-medium">Details</h3>
                 <p className="text-base font-normal text-gray-700">
-                  {product.details}
+                  {product.description}
                 </p>
               </div>
             </div>
@@ -189,7 +201,7 @@ export default function ProductDetails() {
               <h1 className="text-3xl font-normal mb-10">{product.price}</h1>
               <h3 className="text-base font-medium mb-2">Color</h3>
               <div className="flex justify-start w-fit mb-10">
-                {product.colors.map((color, colorIdx) => {
+                {products.colors.map((color, colorIdx) => {
                   return (
                     <div
                       key={colorIdx}
@@ -216,7 +228,7 @@ export default function ProductDetails() {
               <div className="ralative">
                 <h3 className="text-base font-medium mb-2">Size</h3>
                 <div className="flex flex-wrap">
-                  {product.sizes.map((size) => {
+                  {products.sizes.map((size) => {
                     return (
                       <div key={size.name}>
                         <button
