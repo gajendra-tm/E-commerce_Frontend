@@ -1,10 +1,18 @@
 import React from "react";
+import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 
 export default function SignUp() {
+  const {
+    register,
+    handleSubmit,
+    // watch,
+    formState: { errors },
+  } = useForm();
+
   return (
     <>
-      <div className="flex justify-center items-center max-w-full min-h-screen border border-red-700">
+      <div className="flex justify-center items-center max-w-full min-h-screen">
         <div>
           <div className="mx-auto rounded-full bg-slate-300 w-16 sm:w-20 h-16 sm:h-20">
             <img
@@ -14,9 +22,12 @@ export default function SignUp() {
             />
           </div>
           <h1 className=" text-xl sm:text-2xl mt-4 font-bold  text-center">
-            Create a new account
+            Create a New Account
           </h1>
-          <form className="mt-10 mb-4">
+          <form
+            className="mt-10"
+            onSubmit={handleSubmit((data) => console.log(data))}
+          >
             <div>
               <label
                 className="text-sm font-medium text-gray-600"
@@ -24,62 +35,92 @@ export default function SignUp() {
               >
                 Email address
               </label>
-              <div>
+              <div className="w-72 sm:w-96 h-full mb-5 mt-3">
                 <input
-                  className="w-72 sm:w-96 h-9 my-3 p-2 border border-gray-300 shadow-sm  rounded-md outline-blue-700 "
+                  className="w-full h-full p-2 border border-gray-300 shadow-sm  rounded-md outline-blue-700 "
                   id="email"
-                  name="email"
+                  {...register("email", {
+                    required: "email is required",
+                    pattern: {
+                      value: /\b[\w\.-]+@[\w\.-]+\.\w{2,4}\b/gi,
+                      message: "enter the valid email",
+                    },
+                  })}
                   type="email"
-                  required
                 />
+                {errors.email && (
+                  <p className="text-red-500">{errors.email.message}</p>
+                )}
               </div>
             </div>
 
             <div>
-              <div className="flex justify-between mt-4">
-                <label
-                  className="text-sm font-medium text-gray-600"
-                  htmlFor="password"
-                >
-                  Password
-                </label>
-              </div>
-              <div className="">
+              <label
+                className="text-sm font-medium text-gray-600"
+                htmlFor="password"
+              >
+                Password
+              </label>
+              <div className=" w-72 sm:w-96 h-full mb-5 mt-3">
                 <input
-                  className="w-72 sm:w-96 h-9 my-3 p-2 border border-gray-300 shadow-sm rounded-md outline-blue-700 "
+                  className="w-full h-full p-2 border border-gray-300 shadow-sm rounded-md outline-blue-700 "
                   id="password"
-                  name="password"
+                  {...register("password", {
+                    required: "passowrd is required",
+                    pattern: {
+                      value:
+                        /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/gm,
+                      message: `at least 8 characters
+                  - must contain at least 1 uppercase letter, 1 lowercase letter, and 1 number
+                  - Can contain special characters`,
+                    },
+                  })}
                   type="password"
-                  required
                 />
-              </div>
-
-              <div className="flex justify-between mt-4">
-                <label
-                  className="text-sm font-medium text-gray-600"
-                  htmlFor="confirm-password"
-                >
-                  Confirm Password
-                </label>
-              </div>
-              <div className="">
-                <input
-                  className="w-72 sm:w-96 h-9 my-3 p-2 border border-gray-300 shadow-sm rounded-md outline-blue-700 "
-                  id="confirm-password"
-                  name="confirm-password"
-                  type="confirm-password"
-                  required
-                />
+                {errors.password && (
+                  <p className=" text-red-500">{errors.password.message}</p>
+                )}
               </div>
             </div>
+
+            <div>
+              <label
+                className="text-sm font-medium text-gray-600"
+                htmlFor="confirmPassword"
+              >
+                Confirm Password
+              </label>
+              <div className=" w-72 sm:w-96 h-full mb-5 mt-3">
+                <input
+                  className="w-full h-full p-2 border border-gray-300 shadow-sm rounded-md outline-blue-700 "
+                  id="confirmPassword"
+                  {...register("confirmPassword", {
+                    required: "confirm the password",
+                    validate: (value, formValues) => value === formValues.password || "password does not match"
+                  })}
+                  type="confirmPassword"
+                />
+                {errors.confirmPassword && (
+                  <p className=" text-red-500">{errors.confirmPassword.message}</p>
+                )}
+              </div>
+            </div>
+           
+
+            <div className="w-72 sm:w-96 h-9 mb-10">
+              <button className="w-full h-full bg-blue-700 hover:bg-blue-600 rounded-md text-white">
+                Sign up
+              </button>
+            </div>
           </form>
-          <button className="w-72 sm:w-96 h-9 mb-10 bg-blue-700 hover:bg-blue-600 rounded-md text-white">
-            Sign up
-          </button>
+
           <div className="text-center text-sm text-gray-500">
             <p>
               Have an account?
-              <Link className="text-blue-700 hover:text-blue-600 text-sm ml-1 font-semibold" to="/login">
+              <Link
+                className="text-blue-700 hover:text-blue-600 text-sm ml-1 font-semibold"
+                to="/login"
+              >
                 Login to account
               </Link>
             </p>
