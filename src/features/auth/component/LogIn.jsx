@@ -1,17 +1,21 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, Navigate } from "react-router-dom";
+import { checkUserAsync, selectLoggedInUser } from "../authSlice";
 
 export default function SignUp() {
+  const loggedInUser = useSelector(selectLoggedInUser);
+  const dispatch = useDispatch();
   const {
     register,
     handleSubmit,
-    // watch,
     formState: { errors },
   } = useForm();
 
   return (
     <>
+      {loggedInUser && <Navigate to="/" replace={true}></Navigate>}
       <div className="flex justify-center items-center max-w-full min-h-screen">
         <div>
           <div className="mx-auto rounded-full bg-slate-300 w-16 sm:w-20 h-16 sm:h-20">
@@ -25,8 +29,13 @@ export default function SignUp() {
             Log in to your Account
           </h1>
           <form
+          noValidate
             className="mt-10"
-            onSubmit={handleSubmit((data) => console.log(data))}
+            onSubmit={handleSubmit((data) => {
+              dispatch(
+                checkUserAsync({ email: data.email, password: data.password })
+              )
+            })}
           >
             <div>
               <label
@@ -77,7 +86,10 @@ export default function SignUp() {
             </div>
 
             <div className="w-72 sm:w-96 h-9 mb-10">
-              <button className="w-full h-full bg-blue-700 hover:bg-blue-600 rounded-md text-white">
+              <button
+                type="submit"
+                className="w-full h-full bg-blue-700 hover:bg-blue-600 rounded-md text-white"
+              >
                 Log in
               </button>
             </div>
