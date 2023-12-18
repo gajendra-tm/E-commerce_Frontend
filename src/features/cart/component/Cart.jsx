@@ -59,7 +59,7 @@ export default function Cart() {
                         Qty
                       </p>
                       <select
-                      onChange={(e)=>handleUpdate(e,item.id)}
+                      onChange={(e)=>handleUpdate(e,item)}
                       value={item.quantity}
                         className="border border-gray-500 shadow-md outline-blue-500 w-10 rounded-md"
                       >

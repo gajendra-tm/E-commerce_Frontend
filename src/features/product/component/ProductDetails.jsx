@@ -78,6 +78,7 @@ export default function ProductDetails() {
   const [currentIndex, setCurrentIdex] = useState(0);
   const product = useSelector(selectProductsById);
   const user = useSelector(selectLoggedInUser);
+  console.log(user.id,"thui")
   const dispatch = useDispatch();
   const params = useParams();
 

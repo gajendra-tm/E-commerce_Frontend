@@ -17,7 +17,7 @@ export const checkUser = async (loggedData) => {
     const data = await response.json();
     if (data.length) {
       if (password === data[0].password) {
-        return { data: data[0].email };
+        return { data: data[0] };
       } else {
         return { message: "incorrect email or passowrd" };
       }

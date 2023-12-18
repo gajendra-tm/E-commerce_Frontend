@@ -1,82 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useAnimate, stagger, motion } from "framer-motion";
 import { Link } from "react-router-dom";
-
-const products = [
-  {
-    id: 1,
-    name: "Throwback Hip Bag",
-    href: "#",
-    color: "Salmon",
-    price: "$90.00",
-    quantity: 1,
-    imageSrc:
-      "https://tailwindui.com/img/ecommerce-images/shopping-cart-page-04-product-01.jpg",
-    imageAlt:
-      "Salmon orange fabric pouch with match zipper, gray zipper pull, and adjustable hip belt.",
-  },
-  {
-    id: 2,
-    name: "Throwback Hip Bag",
-    href: "#",
-    color: "Salmon",
-    price: "$90.00",
-    quantity: 2,
-    imageSrc:
-      "https://tailwindui.com/img/ecommerce-images/shopping-cart-page-04-product-01.jpg",
-    imageAlt:
-      "Salmon orange fabric pouch with match zipper, gray zipper pull, and adjustable hip belt.",
-  },
-
-  {
-    id: 3,
-    name: "Throwback Hip Bag",
-    href: "#",
-    color: "Salmon",
-    price: "$90.00",
-    quantity: 1,
-    imageSrc:
-      "https://tailwindui.com/img/ecommerce-images/shopping-cart-page-04-product-01.jpg",
-    imageAlt:
-      "Salmon orange fabric pouch with match zipper, gray zipper pull, and adjustable hip belt.",
-  },
-  //   {
-  //     id: 4,
-  //     name: "Throwback Hip Bag",
-  //     href: "#",
-  //     color: "Salmon",
-  //     price: "$90.00",
-  //     quantity: 1,
-  //     imageSrc:
-  //       "https://tailwindui.com/img/ecommerce-images/shopping-cart-page-04-product-01.jpg",
-  //     imageAlt:
-  //       "Salmon orange fabric pouch with match zipper, gray zipper pull, and adjustable hip belt.",
-  //   },
-  //   {
-  //     id: 5,
-  //     name: "Throwback Hip Bag",
-  //     href: "#",
-  //     color: "Salmon",
-  //     price: "$90.00",
-  //     quantity: 1,
-  //     imageSrc:
-  //       "https://tailwindui.com/img/ecommerce-images/shopping-cart-page-04-product-01.jpg",
-  //     imageAlt:
-  //       "Salmon orange fabric pouch with match zipper, gray zipper pull, and adjustable hip belt.",
-  //   },
-  //   {
-  //     id: 6,
-  //     name: "Throwback Hip Bag",
-  //     href: "#",
-  //     color: "Salmon",
-  //     price: "$90.00",
-  //     quantity: 1,
-  //     imageSrc:
-  //       "https://tailwindui.com/img/ecommerce-images/shopping-cart-page-04-product-01.jpg",
-  //     imageAlt:
-  //       "Salmon orange fabric pouch with match zipper, gray zipper pull, and adjustable hip belt.",
-  //   },
-];
+import { useDispatch, useSelector } from "react-redux";
+import { seletCartItems, updateCartItemsAsync, deleteCartItemsAsync} from "../cartSlice"
 
 const addresses = [
   {
@@ -134,6 +60,20 @@ function useOrderAnimation(orderIsOpen) {
 export default function CheckOut() {
   const [orderIsOpen, setOrderIsOpen] = useState(false);
   const orderscope = useOrderAnimation(orderIsOpen);
+  const cartItems = useSelector(seletCartItems);
+  const dispatch = useDispatch();
+
+  const totalPrice = cartItems.reduce((amount, item)=>item.price*item.quantity +amount,0);
+  const totalItems = cartItems.reduce((total, item)=>item.quantity +total,0);
+
+  const handleUpdate =(e, item)=>{
+    dispatch(updateCartItemsAsync({...item, quantity:+e.target.value}));
+  };
+
+  const handleDelete =(e, item)=>{
+    e.preventDefault();
+    dispatch(deleteCartItemsAsync(item));
+  };
 
   return (
     <>
@@ -359,47 +299,47 @@ export default function CheckOut() {
                 </svg>
               </span>
             </div>
-            {products.map((product) => {
+            {cartItems.map((item) => {
               return (
                 <div
-                  key={product.id}
+                  key={item.id}
                   className="flex justify-evenly border-t-2 mb-2 py-5"
                 >
                   <div className="w-20 h-20 border-2 border-gray-200 rounded-lg flex-shrink-0 overflow-hidden mr-3">
                     <img
                       className="w-full h-full object-cover object-center"
-                      src={product.imageSrc}
-                      alt={product.imageAlt}
+                      src={item.thumbnail}
+                      alt={item.title}
                     />
                   </div>
                   <div className="flex flex-col w-full ">
                     <div>
                       <div className="flex justify-between">
                         <h3 className="text-base truncate font-normal">
-                          {product.name}
+                          {item.title}
                         </h3>
                         <h3 className="text-base font-medium ml-2">
-                          {product.price}
+                          ${item.price}
                         </h3>
                       </div>
-                      <p className="text-base text-gray-400">{product.color}</p>
+                      <p className="text-base text-gray-400">Rating:{item.Rating}</p>
                     </div>
                     <div className="flex justify-between mt-auto">
                       <div>
                         <p className="text-base inline text-left mr-3 ">Qty</p>
                         <select
-                          name=""
-                          id=""
+                        onChange={(e)=>handleUpdate(e,item)}
+                        value={item.quantity}
                           className="border border-gray-500 shadow-md outline-blue-500  w-10 rounded-md"
                         >
-                          <option value="">{product.quantity}</option>
-                          <option value="">{product.quantity}</option>
-                          <option value="">{product.quantity}</option>
-                          <option value="">{product.quantity}</option>
-                          <option value="">{product.quantity}</option>
+                          <option value="1">1</option>
+                          <option value="2">2</option>
+                          <option value="3">3</option>
+                          <option value="4">4</option>
+                          <option value="5">5</option>
                         </select>
                       </div>
-                      <h3 className="text-base font-normal text-blue-600">
+                      <h3 onClick={(e)=>handleDelete(e,item)} className="text-base font-normal text-blue-600">
                         <Link to="#">remove</Link>
                       </h3>
                     </div>
@@ -410,7 +350,11 @@ export default function CheckOut() {
             <div className="border-t-2 mb-2 py-5 ">
               <div className="flex justify-between">
                 <h3 className="text-base font-medium">Subtotal</h3>
-                <h3 className="text-base font-medium">$90</h3>
+                <h3 className="text-base font-medium">${totalPrice}</h3>
+              </div>
+              <div className="flex justify-between">
+                <h3 className="text-base font-medium">Total Items</h3>
+                <h3 className="text-base font-medium">{totalItems}Items</h3>
               </div>
               <p className="text-base text-gray-400">
                 Shipping and taxes will be calculated at checkout.
@@ -439,47 +383,46 @@ export default function CheckOut() {
         <div className="hidden md:block p-4 col-start-3 col-end-5 max-w-full h-fit bg-white">
           <h1 className="text-lg font-medium">Order summary</h1>
           <div>
-            {products.map((product) => {
+            {cartItems.map((item) => {
               return (
                 <div
-                  key={product.id}
+                  key={item.id}
                   className="flex justify-evenly box-content border-t-2 mb-2 py-5"
                 >
                   <div className="w-24 h-24 border-2 border-gray-200 rounded-lg flex-shrink-0 overflow-hidden mr-3">
                     <img
                       className="w-full h-full object-cover object-center"
-                      src={product.imageSrc}
-                      alt={product.imageAlt}
+                      src={item.thumbnail}
+                      alt={item.title}
                     />
                   </div>
                   <div className="flex flex-col w-full ">
                     <div>
                       <div className="flex justify-between">
                         <h3 className="text-base truncate font-normal">
-                          {product.name}
+                          {item.title}
                         </h3>
                         <h3 className="text-sm sm:text-base font-normal ml-2">
-                          {product.price}
+                          ${item.price}
                         </h3>
                       </div>
-                      <p className="text-base text-gray-400">{product.color}</p>
+                      <p className="text-base text-gray-400">Rating:{item.rating}</p>
                     </div>
                     <div className="flex justify-between mt-auto">
                       <div>
                         <p className="text-base inline text-left mr-3 ">Qty</p>
                         <select
-                          name=""
-                          id=""
+                          onChange={(e)=>handleUpdate(e,item)}
                           className="border border-gray-500 shadow-md outline-blue-500  w-10 rounded-md"
                         >
-                          <option value="">{product.quantity}</option>
-                          <option value="">{product.quantity}</option>
-                          <option value="">{product.quantity}</option>
-                          <option value="">{product.quantity}</option>
-                          <option value="">{product.quantity}</option>
+                          <option value="1">1</option>
+                          <option value="2">2</option>
+                          <option value="3">3</option>
+                          <option value="4">4</option>
+                          <option value="5">5</option>
                         </select>
                       </div>
-                      <h3 className="text-base font-normal text-blue-600">
+                      <h3 onClick={(e)=>handleDelete(e,item)} className="text-base font-normal text-blue-600">
                         <Link to="#">remove</Link>
                       </h3>
                     </div>
@@ -491,7 +434,11 @@ export default function CheckOut() {
           <div className="border-t-2 mb-2 py-5 ">
             <div className="flex justify-between">
               <h3 className="text-base font-medium">Subtotal</h3>
-              <h3 className="text-base font-medium">$90</h3>
+              <h3 className="text-base font-medium">${totalPrice}</h3>
+            </div>
+            <div className="flex justify-between">
+              <h3 className="text-base font-medium">Total Items</h3>
+              <h3 className="text-base font-medium">{totalItems}Items</h3>
             </div>
             <p className="text-base text-gray-400">
               Shipping and taxes will be calculated at checkout.
