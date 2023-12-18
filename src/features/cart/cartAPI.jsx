@@ -23,3 +23,13 @@ export const updateCartItems = async (updateValue)=>{
   const data = await response.json();
   return {data};
 };
+
+export const deleteCartItems = async (itemId)=>{
+  console.log(itemId)
+  const response = await fetch("http://localhost:8080/cart/"+itemId.id,{
+    method:"DELETE",
+    headers:{"Content-type":"application/json"},
+  });
+  const data = await response.json();
+  return {data:itemId}
+}

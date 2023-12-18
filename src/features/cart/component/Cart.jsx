@@ -1,7 +1,7 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { seletCartItems, updateCartItemsAsync } from "../cartSlice";
+import { deleteCartItemsAsync, seletCartItems, updateCartItemsAsync } from "../cartSlice";
 
 export default function Cart() {
   const cartItems = useSelector(seletCartItems);
@@ -12,7 +12,12 @@ export default function Cart() {
 
   const handleUpdate =(e, item)=>{
     dispatch(updateCartItemsAsync({...item, quantity:+e.target.value}))
-  }
+  };
+
+  const handleDelete =(e, item)=>{
+    e.preventDefault();
+    dispatch(deleteCartItemsAsync(item));
+  };
 
   return (
     <>
@@ -54,7 +59,7 @@ export default function Cart() {
                         Qty
                       </p>
                       <select
-                      onChange={(e)=>handleUpdate(e,item)}
+                      onChange={(e)=>handleUpdate(e,item.id)}
                       value={item.quantity}
                         className="border border-gray-500 shadow-md outline-blue-500 w-10 rounded-md"
                       >
@@ -65,7 +70,8 @@ export default function Cart() {
                         <option value="5">5</option>
                       </select>
                     </div>
-                    <h3 className="text-sm sm:text-base font-normal text-blue-600">
+                    <h3
+                    onClick={(e)=>handleDelete(e,item)} className="text-sm sm:text-base font-normal text-blue-600">
                       <Link to="#">remove</Link>
                     </h3>
                   </div>

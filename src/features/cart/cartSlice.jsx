@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { addToCart, fetchCartItemsByUserId, updateCartItems } from "./cartAPI";
+import { addToCart, deleteCartItems, fetchCartItemsByUserId, updateCartItems } from "./cartAPI";
 
 const initialState = {
   status: "Idle",
@@ -31,6 +31,14 @@ export const updateCartItemsAsync = createAsyncThunk(
   }
 );
 
+export const deleteCartItemsAsync = createAsyncThunk(
+  "cart/deleteCartItems",
+  async (itemId ) => {
+    const response = await deleteCartItems(itemId);
+    return response.data;
+  }
+);
+
 const cartSlice = createSlice({
   name: "cart",
   initialState,
@@ -42,22 +50,30 @@ const cartSlice = createSlice({
       })
       .addCase(addToCartAsync.fulfilled, (state, action) => {
         state.status = "Successful";
-        state.items.push(action.payload);
+        state.items.push(action.payload);//to add multiple items into cartAPI
       })
       .addCase(fetchCartItemsByUserIdAsync.pending, (state) => {
         state.status = "Loading";
       })
       .addCase(fetchCartItemsByUserIdAsync.fulfilled, (state, action) => {
         state.status = "Successful";
-        state.items = action.payload;
+        state.items = action.payload; //to fetch updated items from cartAPI
       })
       .addCase(updateCartItemsAsync.pending, (state) => {
         state.status = "Loading";
       })
       .addCase(updateCartItemsAsync.fulfilled, (state, action) => {
         state.status = "Successful";
-        const index = state.items.findIndex((item)=>item.id === action.payload.id)
+        const index = state.items.findIndex((item)=>item.id === action.payload.id) //this is to find the index of the item to be updated
         state.items[index] = action.payload;
+      })
+      .addCase(deleteCartItemsAsync.pending, (state) => {
+        state.status = "Loading";
+      })
+      .addCase(deleteCartItemsAsync.fulfilled, (state, action) => {
+        state.status = "Successful";
+        const index = state.items.findIndex((item)=>item.id === action.payload.id)
+        state.items.splice(index,1);//to delete one item of this index from items array
       })
   },
 });
