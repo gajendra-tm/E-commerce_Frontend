@@ -1,25 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { useAnimate, stagger, motion } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { seletCartItems, updateCartItemsAsync, deleteCartItemsAsync} from "../cartSlice"
-
-const addresses = [
-  {
-    name: "John wick",
-    phone: "8578965236",
-    address: "HSR layout, Sector-7, Bangaluru.",
-    city: "Bengaluru",
-    pin: "50001",
-  },
-  {
-    name: "Aston agar",
-    phone: "8578965258",
-    address: "HSR layout, Sector-7, Bangaluru.",
-    city: "Bengaluru",
-    pin: "50001",
-  },
-];
+import {
+  seletCartItems,
+  updateCartItemsAsync,
+  deleteCartItemsAsync,
+} from "../cartSlice";
+import { useForm } from "react-hook-form";
+import { selectLoggedInUser, updateUserAsync } from "../../auth/authSlice";
+import { createOrderAsync } from "../../orders/orderSlice";
 
 //order summary animation
 const staggerMenuItems = stagger(0.01, { startDelay: 0.1 });
@@ -59,24 +49,65 @@ function useOrderAnimation(orderIsOpen) {
 
 export default function CheckOut() {
   const [orderIsOpen, setOrderIsOpen] = useState(false);
+  const [selectedAddress, setSelectedAddress] = useState();
+  const [selectedPayment, setSelectedPayment] = useState("Online/UPI");
   const orderscope = useOrderAnimation(orderIsOpen);
   const cartItems = useSelector(seletCartItems);
+  const loggedInUser = useSelector(selectLoggedInUser);
   const dispatch = useDispatch();
 
-  const totalPrice = cartItems.reduce((amount, item)=>item.price*item.quantity +amount,0);
-  const totalItems = cartItems.reduce((total, item)=>item.quantity +total,0);
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm();
 
-  const handleUpdate =(e, item)=>{
-    dispatch(updateCartItemsAsync({...item, quantity:+e.target.value}));
+  const totalPrice = cartItems.reduce(
+    (amount, item) => item.price * item.quantity + amount,
+    0
+  );
+  const totalItems = cartItems.reduce(
+    (total, item) => item.quantity + total,
+    0
+  );
+
+  const handleUpdate = (e, item) => {
+    dispatch(updateCartItemsAsync({ ...item, quantity: +e.target.value }));
   };
 
-  const handleDelete =(e, item)=>{
+  const handleDelete = (e, item) => {
     e.preventDefault();
     dispatch(deleteCartItemsAsync(item));
   };
 
+  const handleAddress = (e) => {
+    setSelectedAddress(loggedInUser.addresses[e.target.value]);
+  };
+
+  const handlePayment = (e) => {
+    console.log(e.target.value);
+    setSelectedPayment(e.target.value);
+  };
+
+  const handleOrders = () => {
+    if (selectedAddress && selectedPayment) {
+      const orders = {
+        loggedInUser,
+        selectedAddress,
+        selectedPayment,
+        cartItems,
+        totalPrice,
+        totalItems,
+        status:"pending" // this can be change/updated by the admin
+      };
+      dispatch(createOrderAsync(orders));
+    }
+  };
+
   return (
     <>
+      {!cartItems.length && <Navigate to="/"></Navigate>}
       <div
         className="grid grid-cols-1 md:grid-cols-4 p-10 relative bg-gray-100 max-w-full min-h-screen"
         ref={orderscope}
@@ -113,7 +144,21 @@ export default function CheckOut() {
             </svg>
           </motion.button>
         </div>
-        <div className="bg-white p-4 md:col-start-1 md:col-end-3 h-full md:w-11/12">
+
+        {/* checkout form */}
+        <form
+          noValidate
+          onSubmit={handleSubmit((data) => {
+            dispatch(
+              updateUserAsync({
+                ...loggedInUser,
+                addresses: [...loggedInUser.addresses, data],
+              })
+            );
+            reset();
+          })}
+          className="bg-white p-4 md:col-start-1 md:col-end-3 h-full md:w-11/12"
+        >
           <div>
             <div className="border-b-2 border-gray-300 ">
               <h2 className="text-md sm:text-lg font-medium">
@@ -123,39 +168,32 @@ export default function CheckOut() {
                 <label htmlFor="email">Email address</label>
                 <input
                   id="email"
-                  name="email"
+                  {...register("email", { required: "email is required" })}
                   type="email"
                   className="p-3 h-5 w-full shadow-sm border text-gray-600 border-gray-400 rounded-lg outline-blue-700"
                 />
+                {errors.email && (
+                  <p className="text-red-500">{errors.email.message}</p>
+                )}
               </div>
             </div>
             <div className="mt-5">
               <h2 className="text-md sm:text-lg font-medium mb-4">
                 Shipping information
               </h2>
-              <div className="grid grid-cols-2">
-                <div className="text-sm sm:text-base text-gray-500 mb-4 mr-1 grid col-span-1">
-                  <label className="block" htmlFor="first_name">
-                    First name
-                  </label>
-                  <input
-                    id="first_name"
-                    name="first_name"
-                    type="text"
-                    className="p-3 h-5 w-full shadow-sm border text-gray-600 border-gray-400 rounded-lg outline-blue-700"
-                  />
-                </div>
-                <div className="text-sm sm:text-base text-gray-500 mb-4 ml-1 grid col-span-1">
-                  <label className="block" htmlFor="last_name">
-                    Last name
-                  </label>
-                  <input
-                    id="last_name"
-                    name="last_name"
-                    type="text"
-                    className="p-3 h-5 w-full shadow-sm border text-gray-600 border-gray-400 rounded-lg outline-blue-700"
-                  />
-                </div>
+              <div className="text-sm sm:text-base text-gray-500 mb-4  grid col-span-1">
+                <label className="block" htmlFor="fullname">
+                  Full Name
+                </label>
+                <input
+                  id="fullname"
+                  {...register("fullname", { required: "name is required" })}
+                  type="text"
+                  className="p-3 h-5 w-full shadow-sm border text-gray-600 border-gray-400 rounded-lg outline-blue-700"
+                />
+                {errors.fullname && (
+                  <p className="text-red-500">{errors.fullname.message}</p>
+                )}
               </div>
               <div className="text-sm sm:text-base text-gray-500 mb-4 grid col-span-1">
                 <label className="block" htmlFor="address">
@@ -163,67 +201,81 @@ export default function CheckOut() {
                 </label>
                 <input
                   id="address"
-                  name="address"
+                  {...register("address", { required: "address is required" })}
                   type="text"
                   className="p-3 h-5 w-full shadow-sm border text-gray-600 border-gray-400 rounded-lg outline-blue-700"
                 />
+                {errors.address && (
+                  <p className="text-red-500">{errors.address.message}</p>
+                )}
               </div>
-              <div className="grid grid-cols-2">
+              <div className="grid grid-cols-3">
                 <div className="text-sm sm:text-base text-gray-500 mb-4 mr-1 grid col-span-1">
                   <label htmlFor="city">City</label>
                   <input
                     id="city"
-                    name="city"
+                    {...register("city", { required: "city is required" })}
                     type="text"
                     className="p-3 h-5 w-full shadow-sm border text-gray-600 border-gray-400 rounded-lg outline-blue-700"
                   />
-                </div>
-                <div className="text-sm sm:text-base text-gray-500 mb-4 ml-1 grid col-span-1">
-                  <label htmlFor="country">Country</label>
-                  <input
-                    id="country"
-                    name="country"
-                    type="text"
-                    className="p-3 h-5 w-full shadow-sm border text-gray-600 border-gray-400 rounded-lg outline-blue-700"
-                  />
+                  {errors.city && (
+                    <p className="text-red-500">{errors.city.message}</p>
+                  )}
                 </div>
                 <div className="text-sm sm:text-base text-gray-500 mb-4 mr-1 grid col-span-1">
                   <label htmlFor="state">State</label>
                   <input
                     id="state"
-                    name="state"
+                    {...register("state", { required: "state is required" })}
                     type="text"
                     className="p-3 h-5 w-full shadow-sm border text-gray-600 border-gray-400 rounded-lg outline-blue-700"
                   />
+                  {errors.state && (
+                    <p className="text-red-500">{errors.state.message}</p>
+                  )}
                 </div>
-                <div className="text-sm sm:text-base text-gray-500 mb-4 ml-1 grid col-span-1">
-                  <label htmlFor="postal_code">Postal code</label>
+                <div className="text-sm sm:text-base text-gray-500 mb-4 grid col-span-1">
+                  <label htmlFor="pincode">Postal code</label>
                   <input
-                    id="postal_code"
-                    name="postal_code"
+                    id="pincode"
+                    {...register("pincode", { required: "picode is required" })}
                     type="number"
                     className="p-3 h-5 w-full shadow-sm border text-gray-600 border-gray-400 rounded-lg outline-blue-700"
                   />
+                  {errors.pincode && (
+                    <p className="text-red-500">{errors.pincode.message}</p>
+                  )}
                 </div>
               </div>
               <div className="text-sm sm:text-base text-gray-500 mb-8 grid col-span-1">
                 <label htmlFor="phone">Phone</label>
                 <input
                   id="phone"
-                  name="phone"
-                  type="number"
+                  {...register("phone", { required: "enter the phone number" })}
+                  type="tel"
                   className="p-3 h-5 w-full shadow-sm border text-gray-600 border-gray-400 rounded-lg outline-blue-700"
                 />
+                {errors.phone && (
+                  <p className="text-red-500">{errors.phone.message}</p>
+                )}
               </div>
             </div>
             <div className="flex justify-end pb-10 border-b-2 border-gray-300">
-                <button className="text-sm text-center text-gray-900 hover:text-white font-medium max-w-max border-2 border-gray-400 rounded-lg p-1 bg-white hover:bg-blue-700 ">
-                  Reset
-                </button>
-                <button className="text-sm text-center text-white hover:text-gray-900 font-medium max-w-max border-2 border-gray-400 rounded-lg p-1 ml-2 bg-blue-700 hover:bg-white">
-                  Save address
-                </button>
-              </div>
+              <button
+                onClick={() => {
+                  reset();
+                }}
+                className="text-sm text-center text-gray-900 hover:text-white font-medium max-w-max border-2 border-gray-400 rounded-lg p-1 bg-white hover:bg-blue-700 "
+              >
+                Reset
+              </button>
+              <button
+                type="submit"
+                className="text-sm text-center text-white hover:text-gray-900 font-medium max-w-max border-2 border-gray-400 rounded-lg p-1 ml-2 bg-blue-700 hover:bg-white"
+              >
+                Save address
+              </button>
+            </div>
           </div>
           <div className="py-10 border-b-2 border-gray-300">
             <h2 className="text-md sm:text-lg font-medium mb-1">
@@ -233,20 +285,26 @@ export default function CheckOut() {
               Choose from Existing address
             </p>
             <div>
-              {addresses.map((address) => {
+              {loggedInUser.addresses.map((address, index) => {
                 return (
                   <div
                     key={address.phone}
                     className="p-2 mb-1 border-2 border-gray-300"
                   >
                     <div className="flex space-x-2 text-sm font-medium text-gray-600">
-                      <input name="address" type="radio" />
-                      <h3>{address.name}</h3>
+                      <input
+                        onChange={handleAddress}
+                        id="address"
+                        value={index}
+                        name="address"
+                        type="radio"
+                      />
+                      <h3>{address.fullname}</h3>
                     </div>
                     <span className="block ml-5 text-sm font-normal text-gray-500">
                       <p>{address.address}</p>
                       <p>City: {address.city}</p>
-                      <p>Pin: {address.pin}</p>
+                      <p>Pin: {address.pincode}</p>
                       <p>Ph: {address.phone}</p>
                     </span>
                   </div>
@@ -264,17 +322,31 @@ export default function CheckOut() {
             <div>
               <div className="p-2 mb-1  border-gray-300">
                 <div className="flex items-center space-x-2 mb-2 text-sm font-medium text-gray-600">
-                  <input name="payment" type="radio" />
+                  <input
+                    onChange={handlePayment}
+                    id="Online/UPI"
+                    value="Online/UPI"
+                    checked={selectedPayment === "Online/UPI"}
+                    name="payment"
+                    type="radio"
+                  />
                   <h3>Online/UPI</h3>
                 </div>
                 <div className="flex items-center space-x-2 text-sm font-medium text-gray-600">
-                  <input name="payment" type="radio" />
+                  <input
+                    onChange={handlePayment}
+                    id="cash"
+                    value="cash"
+                    checked={selectedPayment === "cash"}
+                    name="payment"
+                    type="radio"
+                  />
                   <h3>Cash On Delivery</h3>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        </form>
 
         {/* cart items mobile layout */}
         <div
@@ -322,14 +394,17 @@ export default function CheckOut() {
                           ${item.price}
                         </h3>
                       </div>
-                      <p className="text-base text-gray-400">Rating:{item.Rating}</p>
+                      <p className="text-base text-gray-400">
+                        Rating:{item.Rating}
+                      </p>
                     </div>
                     <div className="flex justify-between mt-auto">
                       <div>
                         <p className="text-base inline text-left mr-3 ">Qty</p>
                         <select
-                        onChange={(e)=>handleUpdate(e,item)}
-                        value={item.quantity}
+                          id="quantity"
+                          onChange={(e) => handleUpdate(e, item)}
+                          value={item.quantity}
                           className="border border-gray-500 shadow-md outline-blue-500  w-10 rounded-md"
                         >
                           <option value="1">1</option>
@@ -339,7 +414,10 @@ export default function CheckOut() {
                           <option value="5">5</option>
                         </select>
                       </div>
-                      <h3 onClick={(e)=>handleDelete(e,item)} className="text-base font-normal text-blue-600">
+                      <h3
+                        onClick={(e) => handleDelete(e, item)}
+                        className="text-base font-normal text-blue-600"
+                      >
                         <Link to="#">remove</Link>
                       </h3>
                     </div>
@@ -356,15 +434,13 @@ export default function CheckOut() {
                 <h3 className="text-base font-medium">Total Items</h3>
                 <h3 className="text-base font-medium">{totalItems}Items</h3>
               </div>
-              <p className="text-base text-gray-400">
-                Shipping and taxes will be calculated at checkout.
-              </p>
               <div>
-                <Link to="/checkout">
-                  <button className="flex justify-center items-center my-8 hover:bg-blue-600 rounded-lg w-full h-10 bg-blue-700 text-white text-base font-medium">
-                    Pay and Order
-                  </button>
-                </Link>
+                <button
+                  onClick={handleOrders}
+                  className="flex justify-center cursor-pointer items-center my-8 hover:bg-blue-600 rounded-lg w-full h-10 bg-blue-700 text-white text-base font-medium"
+                >
+                  Pay and Order
+                </button>
                 <p className="text-center">
                   or
                   <Link
@@ -406,13 +482,15 @@ export default function CheckOut() {
                           ${item.price}
                         </h3>
                       </div>
-                      <p className="text-base text-gray-400">Rating:{item.rating}</p>
+                      <p className="text-base text-gray-400">
+                        Rating:{item.rating}
+                      </p>
                     </div>
                     <div className="flex justify-between mt-auto">
                       <div>
                         <p className="text-base inline text-left mr-3 ">Qty</p>
                         <select
-                          onChange={(e)=>handleUpdate(e,item)}
+                          onChange={(e) => handleUpdate(e, item)}
                           className="border border-gray-500 shadow-md outline-blue-500  w-10 rounded-md"
                         >
                           <option value="1">1</option>
@@ -422,7 +500,10 @@ export default function CheckOut() {
                           <option value="5">5</option>
                         </select>
                       </div>
-                      <h3 onClick={(e)=>handleDelete(e,item)} className="text-base font-normal text-blue-600">
+                      <h3
+                        onClick={(e) => handleDelete(e, item)}
+                        className="text-base font-normal text-blue-600"
+                      >
                         <Link to="#">remove</Link>
                       </h3>
                     </div>
@@ -440,15 +521,13 @@ export default function CheckOut() {
               <h3 className="text-base font-medium">Total Items</h3>
               <h3 className="text-base font-medium">{totalItems}Items</h3>
             </div>
-            <p className="text-base text-gray-400">
-              Shipping and taxes will be calculated at checkout.
-            </p>
             <div>
-              <Link to="/checkout">
-                <button className="flex justify-center items-center my-8 hover:bg-blue-600 rounded-lg w-full h-12 bg-blue-700 text-white text-base font-medium">
-                  Pay and Order
-                </button>
-              </Link>
+              <button
+                onClick={handleOrders}
+                className="flex justify-center cursor-pointer items-center my-8 hover:bg-blue-600 rounded-lg w-full h-12 bg-blue-700 text-white text-base font-medium"
+              >
+                Pay and Order
+              </button>
               <p className="text-center">
                 or
                 <Link

@@ -34,7 +34,7 @@ export default function SignUp() {
             className="mt-10"
             onSubmit={handleSubmit((data) => {
               dispatch(
-                createUserAsync({ email: data.email, password: data.password })
+                createUserAsync({ email: data.email, password: data.password, addresses:[] })
               )
             })}
           >
