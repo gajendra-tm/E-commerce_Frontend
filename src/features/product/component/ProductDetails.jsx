@@ -78,13 +78,14 @@ export default function ProductDetails() {
   const [currentIndex, setCurrentIdex] = useState(0);
   const product = useSelector(selectProductsById);
   const user = useSelector(selectLoggedInUser);
-  console.log(user.id,"thui")
   const dispatch = useDispatch();
   const params = useParams();
 
   const handleCart = (e) => {
     e.preventDefault();
-    dispatch(addToCartAsync({ ...product, quantity: 1, user: user.id }));
+    const newItems = { ...product, quantity: 1, user: user.id }
+    delete newItems['id'] // to delete the default id that come with product details
+    dispatch(addToCartAsync(newItems));
   };
 
   const handleRightClick = (e) => {

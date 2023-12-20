@@ -1,6 +1,6 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { deleteCartItemsAsync, seletCartItems, updateCartItemsAsync } from "../cartSlice";
 
 export default function Cart() {
@@ -21,6 +21,7 @@ export default function Cart() {
 
   return (
     <>
+    {!cartItems.length && <Navigate to="/"></Navigate>}
       <div className="flex flex-col justify-center items-center p-20 max-w-full min-h-full">
         <div className="p-4 w-full sm:w-9/12 bg-white">
           <div className="flex">
@@ -59,6 +60,7 @@ export default function Cart() {
                         Qty
                       </p>
                       <select
+                      id="quantity"
                       onChange={(e)=>handleUpdate(e,item)}
                       value={item.quantity}
                         className="border border-gray-500 shadow-md outline-blue-500 w-10 rounded-md"
