@@ -6,6 +6,7 @@ import {
   seletCartItems,
   updateCartItemsAsync,
   deleteCartItemsAsync,
+  resetCartAsync,
 } from "../cartSlice";
 import { useForm } from "react-hook-form";
 import { selectLoggedInUser, updateUserAsync } from "../../auth/authSlice";
@@ -51,6 +52,7 @@ export default function CheckOut() {
   const [orderIsOpen, setOrderIsOpen] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState();
   const [selectedPayment, setSelectedPayment] = useState("Online/UPI");
+  const [paymentDone, setPaymentDone] = useState(false); //need to be updated with the payment response of payment gateway
   const orderscope = useOrderAnimation(orderIsOpen);
   const cartItems = useSelector(seletCartItems);
   const loggedInUser = useSelector(selectLoggedInUser);
@@ -102,12 +104,14 @@ export default function CheckOut() {
         status:"pending" // this can be change/updated by the admin
       };
       dispatch(createOrderAsync(orders));
+      dispatch(resetCartAsync(loggedInUser.id));
     }
   };
 
   return (
     <>
       {!cartItems.length && <Navigate to="/"></Navigate>}
+      {paymentDone && <Navigate to="/order-successful"></Navigate>}
       <div
         className="grid grid-cols-1 md:grid-cols-4 p-10 relative bg-gray-100 max-w-full min-h-screen"
         ref={orderscope}
@@ -436,7 +440,7 @@ export default function CheckOut() {
               </div>
               <div>
                 <button
-                  onClick={handleOrders}
+                  onClick={()=>{handleOrders(), setPaymentDone(true)}}
                   className="flex justify-center cursor-pointer items-center my-8 hover:bg-blue-600 rounded-lg w-full h-10 bg-blue-700 text-white text-base font-medium"
                 >
                   Pay and Order
@@ -523,7 +527,7 @@ export default function CheckOut() {
             </div>
             <div>
               <button
-                onClick={handleOrders}
+                onClick={()=>{handleOrders(), setPaymentDone(true)}}
                 className="flex justify-center cursor-pointer items-center my-8 hover:bg-blue-600 rounded-lg w-full h-12 bg-blue-700 text-white text-base font-medium"
               >
                 Pay and Order

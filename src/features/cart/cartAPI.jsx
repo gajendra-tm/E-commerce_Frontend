@@ -32,3 +32,12 @@ export const deleteCartItems = async (itemId)=>{
   const data = await response.json();
   return {data:itemId}
 }
+
+export const resetCart = async (userId)=>{
+  const response = await fetchCartItemsByUserId(userId);
+  const items = response.data;
+  for (let item of items){
+await deleteCartItems(item)
+  }
+  return {data:"success"}
+}

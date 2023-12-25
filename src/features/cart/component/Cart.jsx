@@ -16,13 +16,14 @@ export default function Cart() {
 
   const handleDelete =(e, item)=>{
     e.preventDefault();
+    console.log(item)
     dispatch(deleteCartItemsAsync(item));
   };
 
   return (
     <>
     {!cartItems.length && <Navigate to="/"></Navigate>}
-      <div className="flex flex-col justify-center items-center p-20 max-w-full min-h-full">
+      <div className="flex flex-col justify-center items-center py-20 max-w-full min-h-full">
         <div className="p-4 w-full sm:w-9/12 bg-white">
           <div className="flex">
             <h1 className="text-2xl sm:text-3xl font-bold mb-2">Cart</h1>
