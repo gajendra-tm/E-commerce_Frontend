@@ -28,3 +28,8 @@ export const checkUser = async (loggedData) => {
     return { message: "server not available" };
   }
 };
+
+export const signOutUser = async(loggedData)=>{
+  const response = await fetch(loggedData)
+  return{data:{response}}
+} 
