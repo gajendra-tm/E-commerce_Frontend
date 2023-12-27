@@ -16,7 +16,6 @@ export default function Cart() {
 
   const handleDelete =(e, item)=>{
     e.preventDefault();
-    console.log(item)
     dispatch(deleteCartItemsAsync(item));
   };
 
@@ -73,10 +72,10 @@ export default function Cart() {
                         <option value="5">5</option>
                       </select>
                     </div>
-                    <h3
+                    <button
                     onClick={(e)=>handleDelete(e,item)} className="text-sm sm:text-base font-normal text-blue-600">
                       <Link to="#">remove</Link>
-                    </h3>
+                    </button>
                   </div>
                 </div>
               </div>

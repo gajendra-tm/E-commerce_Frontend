@@ -28,13 +28,3 @@ export const checkUser = async (loggedData) => {
     return { message: "server not available" };
   }
 };
-
-export const updateUser = async (updatedData)=>{
-  const response = await fetch("http://localhost:8080/users/"+updatedData.id,{
-    method:"PATCH",
-    body:JSON.stringify(updatedData),
-    headers:{"Content-type":"application/json"}
-  });
-  const data = await response.json();
-  return {data};
-};

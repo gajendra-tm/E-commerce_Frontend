@@ -9,7 +9,7 @@ import {
   resetCartAsync,
 } from "../cartSlice";
 import { useForm } from "react-hook-form";
-import { selectLoggedInUser, updateUserAsync } from "../../auth/authSlice";
+import { selectUserInfo, updateUserAsync } from "../../user/userSlice" 
 import { createOrderAsync } from "../../orders/orderSlice";
 
 //order summary animation
@@ -55,7 +55,7 @@ export default function CheckOut() {
   const [paymentDone, setPaymentDone] = useState(false); //need to be updated with the payment response of payment gateway
   const orderscope = useOrderAnimation(orderIsOpen);
   const cartItems = useSelector(seletCartItems);
-  const loggedInUser = useSelector(selectLoggedInUser);
+  const user = useSelector(selectUserInfo);
   const dispatch = useDispatch();
 
   const {
@@ -84,7 +84,7 @@ export default function CheckOut() {
   };
 
   const handleAddress = (e) => {
-    setSelectedAddress(loggedInUser.addresses[e.target.value]);
+    setSelectedAddress(user.addresses[e.target.value]);
   };
 
   const handlePayment = (e) => {
@@ -95,7 +95,7 @@ export default function CheckOut() {
   const handleOrders = () => {
     if (selectedAddress && selectedPayment) {
       const orders = {
-        loggedInUser,
+        user,
         selectedAddress,
         selectedPayment,
         cartItems,
@@ -104,7 +104,7 @@ export default function CheckOut() {
         status:"pending" // this can be change/updated by the admin
       };
       dispatch(createOrderAsync(orders));
-      dispatch(resetCartAsync(loggedInUser.id));
+      dispatch(resetCartAsync(user.id));
     }
   };
 
@@ -155,8 +155,8 @@ export default function CheckOut() {
           onSubmit={handleSubmit((data) => {
             dispatch(
               updateUserAsync({
-                ...loggedInUser,
-                addresses: [...loggedInUser.addresses, data],
+                ...user,
+                addresses: [...user.addresses, data],
               })
             );
             reset();
@@ -289,7 +289,7 @@ export default function CheckOut() {
               Choose from Existing address
             </p>
             <div>
-              {loggedInUser.addresses.map((address, index) => {
+              {user.addresses.map((address, index) => {
                 return (
                   <div
                     key={address.phone}
