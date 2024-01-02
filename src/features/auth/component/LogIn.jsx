@@ -64,12 +64,22 @@ export default function SignUp() {
             </div>
 
             <div>
+              <div className="flex justify-between">
               <label
                 className="text-sm font-medium text-gray-600"
                 htmlFor="password"
               >
                 Password
               </label>
+              <span
+                className="text-sm font-medium text-blue-700 hover:text-blue-600"
+                htmlFor="password"
+              >
+                <Link to="/forgot-password" className="cursor-pointer">
+                Forgot Password?
+                </Link>
+              </span>
+              </div>
               <div className=" w-72 sm:w-96 h-full mb-5 mt-3">
                 <input
                   className="w-full h-full p-2 border border-gray-300 shadow-sm rounded-md outline-blue-700 "

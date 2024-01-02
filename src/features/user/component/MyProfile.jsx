@@ -57,6 +57,7 @@ export default function MyProfile() {
             User email : {user.email}
           </h3>
           <div className="border-t-2 border-gray-300 py-5 mt-2 ">
+            
             {/* add new-address section */}
             <div>
               <div className="flex justify-between items-center max-w-full">
@@ -216,7 +217,7 @@ export default function MyProfile() {
                         onClick={() => {
                           setNewUserAddress(false); reset();
                         }}
-                        className="text-sm text-center text-gray-900 hover:text-white font-medium max-w-max border-2 border-gray-400 rounded-lg p-1 bg-white hover:bg-blue-700 "
+                        className="text-sm text-center text-gray-900 hover:text-white font-medium max-w-max border-2 border-gray-400 rounded-lg p-1 bg-white hover:bg-gray-600 "
                       >
                         Cancel
                       </button>
@@ -224,7 +225,7 @@ export default function MyProfile() {
                         type="submit"
                         className="text-sm text-center text-white hover:text-gray-900 font-medium max-w-max border-2 border-gray-400 rounded-lg p-1 ml-2 bg-blue-700 hover:bg-white"
                       >
-                        Save address
+                       Add address
                       </button>
                     </div>
                   </div>
@@ -382,7 +383,7 @@ export default function MyProfile() {
                             onClick={() => {
                               setEditUserAddress(-1);
                             }}
-                            className="text-sm text-center text-gray-900 hover:text-white font-medium max-w-max border-2 border-gray-400 rounded-lg p-1 bg-white hover:bg-blue-700 "
+                            className="text-sm text-center text-gray-900 hover:text-white font-medium max-w-max border-2 border-gray-400 rounded-lg p-1 bg-white hover:bg-gray-600 "
                           >
                             Cancel
                           </button>
@@ -390,7 +391,7 @@ export default function MyProfile() {
                             type="submit"
                             className="text-sm text-center text-white hover:text-gray-900 font-medium max-w-max border-2 border-gray-400 rounded-lg p-1 ml-2 bg-blue-700 hover:bg-white"
                           >
-                            Save address
+                            Update address
                           </button>
                         </div>
                       </div>

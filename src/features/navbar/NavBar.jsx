@@ -3,18 +3,19 @@ import { useAnimate, stagger, motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { seletCartItems } from "../cart/cartSlice";
-
+import { selectLoggedInUser } from "../auth/authSlice";
 const navLists = [
-  { name: "Dashboard", href: "#" },
-  { name: "Team", href: "#" },
-  { name: "Project", href: "#" },
-  { name: "Calendar", href: "#" },
+  { name: "Dashboard", href: "#", users: true },
+  { name: "Team", href: "#", users: true },
+  { name: "Project", href: "#", users: true },
+  { name: "Calendar", href: "#", users: true },
+  { name: "Admin", href: "/admin", admin: true },
 ];
 
 const userMenu = [
   { name: "My Profile", href: "/my-profile" },
   { name: "My Orders", href: "/my-orders" },
-  { name: "Sign out", href: "/" },
+  { name: "Sign out", href: "/signout" },
 ];
 
 const staggerWebItems = stagger(0.01, { startDelay: 0.1 });
@@ -79,7 +80,6 @@ function useUserAnimation(userIsOpen) {
   const [userScope, animate] = useAnimate();
 
   useEffect(() => {
-
     animate(
       "ul",
       {
@@ -115,6 +115,7 @@ export default function NavBar({ children }) {
   const userScope = useUserAnimation(userIsOpen);
   const scope = useMenuAnimation(isOpen);
   const cartItems = useSelector(seletCartItems);
+  const user = useSelector(selectLoggedInUser);
 
   return (
     <>
@@ -133,19 +134,22 @@ export default function NavBar({ children }) {
           {/* web layout */}
           <div className="hidden sm:block min-w-96 h-14 text-base text-gray-300">
             <ul className="flex items-center min-w-96 h-14 text-base text-gray-300">
-              {navLists.map((navList) => {
-                return (
+              {navLists.map((navList) =>
+                navList[user.role] ? (
                   <li
                     className=" flex items-center px-4 h-8 rounded-lg hover:bg-gray-600 "
                     key={navList.name}
                   >
-                    <a href={navList.href}>{navList.name}</a>
+                    <Link to={navList.href}>{navList.name}</Link>
                   </li>
-                );
-              })}
+                ) : null
+              )}
             </ul>
           </div>
-          <div className=" flex justify-between items-center relative w-20 h-14 ml-auto sm:ml-0 mr-5 sm:mr-10" ref={userScope}>
+          <div
+            className=" flex justify-between items-center relative w-20 h-14 ml-auto sm:ml-0 mr-5 sm:mr-10"
+            ref={userScope}
+          >
             <Link to="/cart">
               <span>
                 <svg
@@ -171,22 +175,25 @@ export default function NavBar({ children }) {
             >
               User
             </motion.button>
-              <ul
+            <ul
               style={{
-              pointerEvents: userIsOpen ? "auto" : "none",
-              clipPath: "inset(10% 50% 90% 50% round 10px)",
-            }}
-            className=" bg-gray-800 text-gray-300 top-14 md:top-16 left-3 w-28 h-fit p-2 absolute"
-            onClick={() => setUserIsOpen(!userIsOpen)}
-              >
-                {userMenu.map((menu,menuIdx) => {
-                  return (
-                    <li key={menuIdx} className="flex flex-col items-center rounded-md w-full hover:bg-gray-500">
-                      <Link to={menu.href}>{menu.name}</Link>
-                    </li>
-                  );
-                })}
-              </ul>
+                pointerEvents: userIsOpen ? "auto" : "none",
+                clipPath: "inset(10% 50% 90% 50% round 10px)",
+              }}
+              className=" bg-gray-800 text-gray-300 top-14 md:top-16 left-3 w-28 h-fit p-2 absolute"
+              onClick={() => setUserIsOpen(!userIsOpen)}
+            >
+              {userMenu.map((menu, menuIdx) => {
+                return (
+                  <li
+                    key={menuIdx}
+                    className="flex flex-col items-center rounded-md w-full hover:bg-gray-500"
+                  >
+                    <Link to={menu.href}>{menu.name}</Link>
+                  </li>
+                );
+              })}
+            </ul>
           </div>
 
           {/* mobile layout */}
@@ -214,13 +221,16 @@ export default function NavBar({ children }) {
             </button>
             <div className="flex justify-start absolute px-4 top-9 -right-11 bg-gray-800 shadow-lg text-white text-lg leading-10 font-medium w-48 min-h-full">
               <ul className="">
-                {navLists.map((navList) => {
-                  return (
-                    <li className="hover:text-gray-400" key={navList.name}>
-                      <a href={navList.href}>{navList.name}</a>
-                    </li>
-                  );
-                })}
+                {navLists.map((navList) =>
+                navList[user.role] ? (
+                  <li
+                    className=" hover:text-gray-400 "
+                    key={navList.name}
+                  >
+                    <Link to={navList.href}>{navList.name}</Link>
+                  </li>
+                ) : null
+              )}
               </ul>
             </div>
           </div>

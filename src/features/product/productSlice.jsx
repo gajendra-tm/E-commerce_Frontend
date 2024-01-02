@@ -1,10 +1,12 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import {
+  createProduct,
   fetchAllProducts,
   fetchBrands,
   fetchCategories,
   fetchProductsByFilters,
   fetchProductsById,
+  updateProduct,
 } from "./productAPI";
 
 const initialState = {
@@ -12,8 +14,8 @@ const initialState = {
   products: [],
   brands: [],
   categories: [],
-  totalItems: 0,
   productsById: [],
+  totalItems: 0,
 };
 
 export const fetchAllProductsAsync = createAsyncThunk(
@@ -28,6 +30,22 @@ export const fetchProductsByIdAsync = createAsyncThunk(
   "product/fetchProductsById",
   async (id) => {
     const response = await fetchProductsById(id);
+    return response.data;
+  }
+);
+
+export const createProductAsync = createAsyncThunk(
+  "product/createProduct",
+  async (product) => {
+    const response = await createProduct(product);
+    return response.data;
+  }
+);
+
+export const updateProductAsync = createAsyncThunk(
+  "product/updateProduct",
+  async (product) => {
+    const response = await updateProduct(product);
     return response.data;
   }
 );
@@ -59,7 +77,11 @@ export const fetchCategoriesAsync = createAsyncThunk(
 const productSlice = createSlice({
   name: "product",
   initialState,
-  reducers: {},
+  reducers: {
+    clearProductsById: (state) => {
+      state.productsById = null;
+    },
+  },
   extraReducers: (bulider) => {
     bulider
       .addCase(fetchAllProductsAsync.pending, (state) => {
@@ -101,6 +123,23 @@ const productSlice = createSlice({
       .addCase(fetchProductsByIdAsync.fulfilled, (state, action) => {
         state.status = "Loading";
         state.productsById = action.payload;
+      })
+      .addCase(createProductAsync.pending, (state) => {
+        state.status = "Loading";
+      })
+      .addCase(createProductAsync.fulfilled, (state, action) => {
+        state.status = "Loading";
+        state.products.push(action.payload);
+      })
+      .addCase(updateProductAsync.pending, (state) => {
+        state.status = "Loading";
+      })
+      .addCase(updateProductAsync.fulfilled, (state, action) => {
+        state.status = "Loading";
+        const index = state.products.findIndex(
+          (product) => product.id === action.payload.id
+        );
+        state.products[index] = action.payload;
       });
   },
 });
@@ -110,5 +149,5 @@ export const selectProductsById = (state) => state.product.productsById;
 export const seletAllTotalItems = (state) => state.product.totalItems;
 export const selectBrands = (state) => state.product.brands;
 export const selectCategories = (state) => state.product.categories;
-export const { extraReducers } = productSlice.actions;
+export const { clearProductsById } = productSlice.actions;
 export default productSlice.reducer;

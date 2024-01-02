@@ -10,6 +10,26 @@ export const fetchProductsById = async (id)=>{
   return {data};
 }
 
+export const createProduct = async(product)=>{
+  const response = await fetch("http://localhost:8080/products/",{
+    method:"POST",
+    body:JSON.stringify(product),
+    headers:{"content-type":"application/json"}
+  })
+  const data = await response.json()
+  return{data};
+}
+
+export const updateProduct = async(product)=>{
+  const response = await fetch("http://localhost:8080/products/"+product.id,{
+    method:"PATCH",
+    body:JSON.stringify(product),
+    headers:{"content-type":"application/json"}
+  })
+  const data = await response.json()
+  return{data};
+}
+
 export const fetchProductsByFilters = async (filter, sort, pagination) => {
   let queryString = "";
   // need to add multi levels on server

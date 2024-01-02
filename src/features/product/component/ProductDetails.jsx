@@ -76,9 +76,9 @@ const products = {
 export default function ProductDetails() {
   const [selectedColor, setSelectedColor] = useState(products.colors[0].name);
   const [currentIndex, setCurrentIdex] = useState(0);
+  const dispatch = useDispatch();
   const product = useSelector(selectProductsById);
   const user = useSelector(selectLoggedInUser);
-  const dispatch = useDispatch();
   const params = useParams();
 
   const handleCart = (e) => {
@@ -113,11 +113,11 @@ export default function ProductDetails() {
         <div className="xl:hidden w-full h-[36rem] relative mt-2 box-border rounded-xl overflow-hidden">
           <div className="w-full h-full ">
             <button
+              xmlns="http://www.w3.org/2000/svg"
               className=" absolute top-2/4 right-1 rounded-full border-2 bg-amber-300 hover:bg-amber-200"
               onClick={handleRightClick}
             >
               <svg
-                xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
                 width="35"
                 height="35"
