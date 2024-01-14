@@ -10,6 +10,7 @@ const navLists = [
   { name: "Project", href: "#", users: true },
   { name: "Calendar", href: "#", users: true },
   { name: "Admin", href: "/admin", admin: true },
+  { name: "Orders", href: "/admin/admin-order", admin: true },
 ];
 
 const userMenu = [
