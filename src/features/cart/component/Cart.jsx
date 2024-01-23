@@ -1,27 +1,37 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, Navigate } from "react-router-dom";
-import { deleteCartItemsAsync, seletCartItems, updateCartItemsAsync } from "../cartSlice";
+import {
+  deleteCartItemsAsync,
+  selectCartItems,
+  updateCartItemsAsync,
+} from "../cartSlice";
 
 export default function Cart() {
-  const cartItems = useSelector(seletCartItems);
+  const cartItems = useSelector(selectCartItems);
   const dispatch = useDispatch();
 
-  const totalPrice = cartItems.reduce((amount, item)=>item.price*item.quantity +amount,0);
-  const totalItems = cartItems.reduce((total, item)=>item.quantity +total,0);
+  const totalPrice = cartItems.reduce(
+    (amount, item) => item.price * item.quantity + amount,
+    0
+  );
+  const totalItems = cartItems.reduce(
+    (total, item) => item.quantity + total,
+    0
+  );
 
-  const handleUpdate =(e, item)=>{
-    dispatch(updateCartItemsAsync({...item, quantity:+e.target.value}))
+  const handleUpdate = (e, item) => {
+    dispatch(updateCartItemsAsync({ ...item, quantity: +e.target.value }));
   };
 
-  const handleDelete =(e, item)=>{
+  const handleDelete = (e, item) => {
     e.preventDefault();
     dispatch(deleteCartItemsAsync(item));
   };
 
   return (
     <>
-    {!cartItems.length && <Navigate to="/"></Navigate>}
+      {!cartItems.length && <Navigate to="/"></Navigate>}
       <div className="flex flex-col justify-center items-center py-20 max-w-full min-h-full">
         <div className="p-4 w-full sm:w-9/12 bg-white">
           <div className="flex">
@@ -60,9 +70,9 @@ export default function Cart() {
                         Qty
                       </p>
                       <select
-                      id="quantity"
-                      onChange={(e)=>handleUpdate(e,item)}
-                      value={item.quantity}
+                        id="quantity"
+                        onChange={(e) => handleUpdate(e, item)}
+                        value={item.quantity}
                         className="border border-gray-500 shadow-md outline-blue-500 w-10 rounded-md"
                       >
                         <option value="1">1</option>
@@ -73,8 +83,10 @@ export default function Cart() {
                       </select>
                     </div>
                     <button
-                    onClick={(e)=>handleDelete(e,item)} className="text-sm sm:text-base font-normal text-blue-600">
-                      <Link to="#">remove</Link>
+                      onClick={(e) => handleDelete(e, item)}
+                      className="text-sm sm:text-base font-normal text-blue-600"
+                    >
+                      remove
                     </button>
                   </div>
                 </div>

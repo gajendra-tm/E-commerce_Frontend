@@ -1,17 +1,38 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, Navigate } from "react-router-dom";
-import { checkUserAsync, selectLoggedInUser } from "../authSlice";
+import {
+  checkUserAsync,
+  selectLoggedInUser,
+} from "../authSlice";
+import { Zoom, toast } from "react-toastify";
 
 export default function SignUp() {
   const loggedInUser = useSelector(selectLoggedInUser);
   const dispatch = useDispatch();
+
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
+
+  useEffect(() => {
+    loggedInUser
+      ? toast.success("LoggedIn Successfuly", {
+          position: "top-center",
+          autoClose: 1000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          transition: Zoom,
+        })
+      : "null";
+  }, [loggedInUser]);
 
   return (
     <>
@@ -29,12 +50,12 @@ export default function SignUp() {
             Log in to your Account
           </h1>
           <form
-          noValidate
+            noValidate
             className="mt-10"
             onSubmit={handleSubmit((data) => {
               dispatch(
                 checkUserAsync({ email: data.email, password: data.password })
-              )
+              );
             })}
           >
             <div>
@@ -65,20 +86,20 @@ export default function SignUp() {
 
             <div>
               <div className="flex justify-between">
-              <label
-                className="text-sm font-medium text-gray-600"
-                htmlFor="password"
-              >
-                Password
-              </label>
-              <span
-                className="text-sm font-medium text-blue-700 hover:text-blue-600"
-                htmlFor="password"
-              >
-                <Link to="/forgot-password" className="cursor-pointer">
-                Forgot Password?
-                </Link>
-              </span>
+                <label
+                  className="text-sm font-medium text-gray-600"
+                  htmlFor="password"
+                >
+                  Password
+                </label>
+                <span
+                  className="text-sm font-medium text-blue-700 hover:text-blue-600"
+                  htmlFor="password"
+                >
+                  <Link to="/forgot-password" className="cursor-pointer">
+                    Forgot Password?
+                  </Link>
+                </span>
               </div>
               <div className=" w-72 sm:w-96 h-full mb-5 mt-3">
                 <input

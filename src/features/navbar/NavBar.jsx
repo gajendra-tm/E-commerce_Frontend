@@ -2,14 +2,13 @@ import React, { useState, useEffect } from "react";
 import { useAnimate, stagger, motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { seletCartItems } from "../cart/cartSlice";
+import { selectCartItems } from "../cart/cartSlice";
 import { selectLoggedInUser } from "../auth/authSlice";
+import { Zoom, toast } from "react-toastify";
+
 const navLists = [
-  { name: "Dashboard", href: "#", users: true },
-  { name: "Team", href: "#", users: true },
-  { name: "Project", href: "#", users: true },
-  { name: "Calendar", href: "#", users: true },
-  { name: "Admin", href: "/admin", admin: true },
+  { name: "Products", href: "#", users: true },
+  { name: "Products", href: "/admin", admin: true },
   { name: "Orders", href: "/admin/admin-order", admin: true },
 ];
 
@@ -115,8 +114,24 @@ export default function NavBar({ children }) {
   const [userIsOpen, setUserIsOpen] = useState(false);
   const userScope = useUserAnimation(userIsOpen);
   const scope = useMenuAnimation(isOpen);
-  const cartItems = useSelector(seletCartItems);
+  const cartItems = useSelector(selectCartItems);
   const user = useSelector(selectLoggedInUser);
+
+  const notify = () => {
+    cartItems.length === 0
+      ? toast.warning("Cart is empty", {
+          position: "top-center",
+          autoClose: 1500,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          transition: Zoom,
+        })
+      : "null";
+  };
 
   return (
     <>
@@ -151,7 +166,7 @@ export default function NavBar({ children }) {
             className=" flex justify-between items-center relative w-20 h-14 ml-auto sm:ml-0 mr-5 sm:mr-10"
             ref={userScope}
           >
-            <Link to="/cart">
+            <Link onClick={notify} to="/cart">
               <span>
                 <svg
                   className="invert"
@@ -223,15 +238,12 @@ export default function NavBar({ children }) {
             <div className="flex justify-start absolute px-4 top-9 -right-11 bg-gray-800 shadow-lg text-white text-lg leading-10 font-medium w-48 min-h-full">
               <ul className="">
                 {navLists.map((navList) =>
-                navList[user.role] ? (
-                  <li
-                    className=" hover:text-gray-400 "
-                    key={navList.name}
-                  >
-                    <Link to={navList.href}>{navList.name}</Link>
-                  </li>
-                ) : null
-              )}
+                  navList[user.role] ? (
+                    <li className=" hover:text-gray-400 " key={navList.name}>
+                      <Link to={navList.href}>{navList.name}</Link>
+                    </li>
+                  ) : null
+                )}
               </ul>
             </div>
           </div>

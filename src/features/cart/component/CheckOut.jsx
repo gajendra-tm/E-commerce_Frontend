@@ -3,13 +3,16 @@ import { useAnimate, stagger, motion } from "framer-motion";
 import { Link, Navigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  seletCartItems,
+  selectCartItems,
   updateCartItemsAsync,
   deleteCartItemsAsync,
   resetCartAsync,
 } from "../cartSlice";
 import { useForm } from "react-hook-form";
-import { selectUserInfo, updateUserAsync } from "../../user/userSlice" 
+import {
+  selectUserInfo,
+  updateUserAsync,
+} from "../../user/userSlice";
 import { createOrderAsync } from "../../orders/orderSlice";
 
 //order summary animation
@@ -53,10 +56,10 @@ export default function CheckOut() {
   const [selectedAddress, setSelectedAddress] = useState();
   const [selectedPayment, setSelectedPayment] = useState("Online/UPI");
   const [paymentDone, setPaymentDone] = useState(false); //need to be updated with the payment response of payment gateway
-  const orderscope = useOrderAnimation(orderIsOpen);
-  const cartItems = useSelector(seletCartItems);
-  const user = useSelector(selectUserInfo);
   const dispatch = useDispatch();
+  const orderscope = useOrderAnimation(orderIsOpen);
+  const cartItems = useSelector(selectCartItems);
+  const user = useSelector(selectUserInfo);
 
   const {
     register,
@@ -88,7 +91,6 @@ export default function CheckOut() {
   };
 
   const handlePayment = (e) => {
-    console.log(e.target.value);
     setSelectedPayment(e.target.value);
   };
 
@@ -101,7 +103,7 @@ export default function CheckOut() {
         cartItems,
         totalPrice,
         totalItems,
-        status:"pending" // this can be change/updated by the admin
+        status: "pending", // this can be change/updated by the admin
       };
       dispatch(createOrderAsync(orders));
       dispatch(resetCartAsync(user.id));
@@ -440,7 +442,9 @@ export default function CheckOut() {
               </div>
               <div>
                 <button
-                  onClick={()=>{handleOrders(), setPaymentDone(true)}}
+                  onClick={() => {
+                    handleOrders(), setPaymentDone(true);
+                  }}
                   className="flex justify-center cursor-pointer items-center my-8 hover:bg-blue-600 rounded-lg w-full h-10 bg-blue-700 text-white text-base font-medium"
                 >
                   Pay and Order
@@ -527,7 +531,9 @@ export default function CheckOut() {
             </div>
             <div>
               <button
-                onClick={()=>{handleOrders(), setPaymentDone(true)}}
+                onClick={() => {
+                  handleOrders(), setPaymentDone(true);
+                }}
                 className="flex justify-center cursor-pointer items-center my-8 hover:bg-blue-600 rounded-lg w-full h-12 bg-blue-700 text-white text-base font-medium"
               >
                 Pay and Order

@@ -1,11 +1,15 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, Navigate } from "react-router-dom";
-import { createUserAsync, selectLoggedInUser } from "../authSlice";
+import {
+  createUserAsync,
+  selectLoggedInUser,
+} from "../authSlice";
+import { Zoom, toast } from "react-toastify";
 
 export default function SignUp() {
-  const loggedInUser = useSelector(selectLoggedInUser)
+  const loggedInUser = useSelector(selectLoggedInUser);
   const dispatch = useDispatch();
 
   const {
@@ -14,9 +18,25 @@ export default function SignUp() {
     formState: { errors },
   } = useForm();
 
+  useEffect(() => {
+    loggedInUser
+      ? toast.success("Account created Successfuly", {
+          position: "top-center",
+          autoClose: 1000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          transition: Zoom,
+        })
+        : "null";
+  });
+
   return (
     <>
-    {loggedInUser && <Navigate to="/" replace={true}></Navigate>}
+      {loggedInUser && <Navigate to="/" replace={true}></Navigate>}
       <div className="flex justify-center items-center max-w-full min-h-screen">
         <div>
           <div className="mx-auto rounded-full bg-slate-300 w-16 sm:w-20 h-16 sm:h-20">
@@ -30,12 +50,16 @@ export default function SignUp() {
             Create a New Account
           </h1>
           <form
-          noValidate
+            noValidate
             className="mt-10"
             onSubmit={handleSubmit((data) => {
               dispatch(
-                createUserAsync({ email: data.email, password: data.password, addresses:[] })
-              )
+                createUserAsync({
+                  email: data.email,
+                  password: data.password,
+                  addresses: [],
+                })
+              );
             })}
           >
             <div>

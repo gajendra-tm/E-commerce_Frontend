@@ -144,9 +144,9 @@ const productSlice = createSlice({
   },
 });
 
-export const seletAllProducts = (state) => state.product.products;
+export const selectAllProducts = (state) => state.product.products;
 export const selectProductsById = (state) => state.product.productsById;
-export const seletAllTotalItems = (state) => state.product.totalItems;
+export const selectAllTotalItems = (state) => state.product.totalItems;
 export const selectBrands = (state) => state.product.brands;
 export const selectCategories = (state) => state.product.categories;
 export const { clearProductsById } = productSlice.actions;

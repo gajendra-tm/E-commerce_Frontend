@@ -7,8 +7,8 @@ import {
   fetchProductsByFiltersAsync,
   selectBrands,
   selectCategories,
-  seletAllProducts,
-  seletAllTotalItems,
+  selectAllProducts,
+  selectAllTotalItems,
 } from "../../product/productSlice";
 import AdminProductFilterMobile from "./AdminProductFilterMobile";
 import AdminProductSortWeb from "./AdminProductSortWeb";
@@ -26,8 +26,8 @@ export default function AdminProductFilter() {
   const [page, setPage] = useState(1);
 
   const dispatch = useDispatch();
-  const products = useSelector(seletAllProducts);
-  const totalItems = useSelector(seletAllTotalItems);
+  const products = useSelector(selectAllProducts);
+  const totalItems = useSelector(selectAllTotalItems);
   const brands = useSelector(selectBrands);
   const categories = useSelector(selectCategories);
 

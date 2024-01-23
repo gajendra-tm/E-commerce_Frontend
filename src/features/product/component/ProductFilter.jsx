@@ -7,8 +7,8 @@ import {
   fetchProductsByFiltersAsync,
   selectBrands,
   selectCategories,
-  seletAllProducts,
-  seletAllTotalItems,
+  selectAllProducts,
+  selectAllTotalItems,
 } from "../productSlice";
 import ProductFilterMobile from "./ProductFilterMobile";
 import ProductSortWeb from "./ProductSortWeb";
@@ -25,8 +25,8 @@ export default function ProductFilter() {
   const [page, setPage] = useState(1);
 
   const dispatch = useDispatch();
-  const products = useSelector(seletAllProducts);
-  const totalItems = useSelector(seletAllTotalItems);
+  const products = useSelector(selectAllProducts);
+  const totalItems = useSelector(selectAllTotalItems);
   const brands =useSelector(selectBrands);
   const categories = useSelector(selectCategories);
   

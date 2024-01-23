@@ -1,6 +1,13 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { checkUser, createUser, signOutUser } from "./authAPI";
 
+
+const initialState = {
+  status: "Idle",
+  loggedInUser: null,
+  error: null,
+};
+
 export const createUserAsync = createAsyncThunk(
   "auth/createUser",
   async (userData) => {
@@ -24,14 +31,6 @@ export const signOutUserAsync = createAsyncThunk(
     return response.data;
   }
 );
-
-
-
-const initialState = {
-  status: "Idle",
-  loggedInUser: null,
-  error: null,
-};
 
 const authSlice = createSlice({
   name: "auth",
@@ -70,5 +69,6 @@ const authSlice = createSlice({
 });
 
 export const selectLoggedInUser = (state) => state.auth.loggedInUser;
+export const selectLoggedInStatus = (state)=>state.auth.status;
 export const selectError = (state) => state.auth.error;
 export default authSlice.reducer;

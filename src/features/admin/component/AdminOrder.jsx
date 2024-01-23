@@ -50,12 +50,12 @@ export default function AdminOrder() {
 
   return (
     <>
-      <div className="flex justify-center">
+      <div className="flex flex-col justify-center overflow-auto">
         <table className="bg-green-200 rounded-lg overflow-hidden min-h-full">
-          <thead className="bg-red-200">
+          <thead className="bg-red-200 text-xs md:text-sm">
             <tr>
               <th
-                className="py-3 px-10 cursor-pointer"
+                className="py-3 px-1 lg:px-5 xl:px-10 cursor-pointer"
                 onClick={() =>
                   handleSort({
                     sort: "id",
@@ -116,14 +116,14 @@ export default function AdminOrder() {
                   </svg>
                 )}
               </th>
-              <th className="py-3 px-10">Product Details</th>
-              <th className="py-3 px-10">Shipping Address</th>
-              <th className="py-3 px-10">Amount</th>
-              <th className="py-3 px-10">Status</th>
-              <th className="py-3 px-10">Actions</th>
+              <th className="py-3 px-1 lg:px-5 xl:px-10">Product Details</th>
+              <th className="py-3 px-1 lg:px-5 xl:px-10">Shipping Address</th>
+              <th className="py-3 px-1 lg:px-5 xl:px-10">Amount</th>
+              <th className="py-3 px-1 lg:px-5 xl:px-10">Status</th>
+              <th className="py-3 px-1 lg:px-5 xl:px-10">Actions</th>
             </tr>
           </thead>
-          <tbody className="text-center">
+          <tbody className="text-center text-xs md:text-sm">
             {allOrders.map((orders) => {
               return (
                 <tr key={orders.id}>
@@ -132,12 +132,12 @@ export default function AdminOrder() {
                   </td>
 
                   <td className="py-3 px-5">
-                    <div className="flex justify-center items-center">
-                      <div className="mr-2">
+                    <div className="flex flex-col justify-center items-center">
+                      <div className="xl:mr-2">
                         <img
                           src={orders.cartItems[0].thumbnail}
                           alt="image"
-                          className="w-24 h-24 object-cover object-centers"
+                          className=" w-16 h-16 lg:w-20 lg:h-20 xl:w-24 xl:h-24 object-fill object-center"
                         />
                       </div>
                       <div>

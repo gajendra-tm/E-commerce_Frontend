@@ -3,7 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchProductsByIdAsync, selectProductsById } from "../productSlice";
 import { selectLoggedInUser } from "../../auth/authSlice";
 import { useParams } from "react-router-dom";
-import { addToCartAsync } from "../../cart/cartSlice";
+import { addToCartAsync, selectCartItems } from "../../cart/cartSlice";
+import { toast, Zoom } from "react-toastify";
 
 const products = {
   name: "Basic Tee 6-Pack",
@@ -78,14 +79,47 @@ export default function ProductDetails() {
   const [currentIndex, setCurrentIdex] = useState(0);
   const dispatch = useDispatch();
   const product = useSelector(selectProductsById);
+  const cartItems = useSelector(selectCartItems);
   const user = useSelector(selectLoggedInUser);
   const params = useParams();
 
   const handleCart = (e) => {
     e.preventDefault();
-    const newItems = { ...product, quantity: 1, user: user.id }
-    delete newItems['id'] // to delete the default id that come with product details
-    dispatch(addToCartAsync(newItems));
+    if (cartItems.findIndex((items) => items.productId === product.id) < 0) {
+      //findIndex returns -1 if there is no index, so we put the <0 condition to check true & false
+      const newItems = {
+        ...product,
+        productId: product.id,
+        quantity: 1,
+        user: user.id,
+      };
+      delete newItems["id"]; // to delete the default id that come with product details
+      dispatch(addToCartAsync(newItems));
+      toast.success("item added successfully", {
+        //this needs to be reffered from the backend only
+        position: "top-center",
+        autoClose: 1000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Zoom,
+      });
+    } else {
+      toast.warn("item already added", {
+        position: "top-center",
+        autoClose: 1000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Zoom,
+      });
+    }
   };
 
   const handleRightClick = (e) => {
@@ -117,11 +151,7 @@ export default function ProductDetails() {
               className=" absolute top-2/4 right-1 rounded-full border-2 bg-amber-300 hover:bg-amber-200"
               onClick={handleRightClick}
             >
-              <svg
-                viewBox="0 0 24 24"
-                width="35"
-                height="35"
-              >
+              <svg viewBox="0 0 24 24" width="35" height="35">
                 <path d="M13.1714 12.0007L8.22168 7.05093L9.63589 5.63672L15.9999 12.0007L9.63589 18.3646L8.22168 16.9504L13.1714 12.0007Z"></path>
               </svg>
             </button>
