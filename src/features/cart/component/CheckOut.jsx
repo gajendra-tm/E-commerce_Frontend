@@ -59,7 +59,7 @@ export default function CheckOut() {
   const dispatch = useDispatch();
   const orderscope = useOrderAnimation(orderIsOpen);
   const cartItems = useSelector(selectCartItems);
-  const user = useSelector(selectUserInfo);
+  const userInfo = useSelector(selectUserInfo);
 
   const {
     register,
@@ -69,7 +69,7 @@ export default function CheckOut() {
   } = useForm();
 
   const totalPrice = cartItems.reduce(
-    (amount, item) => item.price * item.quantity + amount,
+    (amount, item) => item.product.price * item.quantity + amount,
     0
   );
   const totalItems = cartItems.reduce(
@@ -78,7 +78,7 @@ export default function CheckOut() {
   );
 
   const handleUpdate = (e, item) => {
-    dispatch(updateCartItemsAsync({ ...item, quantity: +e.target.value }));
+    dispatch(updateCartItemsAsync({ id:item.id, quantity: +e.target.value }));
   };
 
   const handleDelete = (e, item) => {
@@ -87,7 +87,7 @@ export default function CheckOut() {
   };
 
   const handleAddress = (e) => {
-    setSelectedAddress(user.addresses[e.target.value]);
+    setSelectedAddress(userInfo.addresses[e.target.value]);
   };
 
   const handlePayment = (e) => {
@@ -97,7 +97,7 @@ export default function CheckOut() {
   const handleOrders = () => {
     if (selectedAddress && selectedPayment) {
       const orders = {
-        user,
+        user:userInfo.id,
         selectedAddress,
         selectedPayment,
         cartItems,
@@ -106,7 +106,7 @@ export default function CheckOut() {
         status: "pending", // this can be change/updated by the admin
       };
       dispatch(createOrderAsync(orders));
-      dispatch(resetCartAsync(user.id));
+      dispatch(resetCartAsync(userInfo.id));
     }
   };
 
@@ -157,8 +157,8 @@ export default function CheckOut() {
           onSubmit={handleSubmit((data) => {
             dispatch(
               updateUserAsync({
-                ...user,
-                addresses: [...user.addresses, data],
+                ...userInfo,
+                addresses: [...userInfo.addresses, data],
               })
             );
             reset();
@@ -291,7 +291,7 @@ export default function CheckOut() {
               Choose from Existing address
             </p>
             <div>
-              {user.addresses.map((address, index) => {
+              {userInfo.addresses.map((address, index) => {
                 return (
                   <div
                     key={address.phone}
@@ -380,28 +380,28 @@ export default function CheckOut() {
             {cartItems.map((item) => {
               return (
                 <div
-                  key={item.id}
+                  key={item.product.id}
                   className="flex justify-evenly border-t-2 mb-2 py-5"
                 >
                   <div className="w-20 h-20 border-2 border-gray-200 rounded-lg flex-shrink-0 overflow-hidden mr-3">
                     <img
                       className="w-full h-full object-cover object-center"
-                      src={item.thumbnail}
-                      alt={item.title}
+                      src={item.product.thumbnail}
+                      alt={item.product.title}
                     />
                   </div>
                   <div className="flex flex-col w-full ">
                     <div>
                       <div className="flex justify-between">
                         <h3 className="text-base truncate font-normal">
-                          {item.title}
+                          {item.product.title}
                         </h3>
                         <h3 className="text-base font-medium ml-2">
-                          ${item.price}
+                          ${item.product.price}
                         </h3>
                       </div>
                       <p className="text-base text-gray-400">
-                        Rating:{item.Rating}
+                        Rating:{item.product.Rating}
                       </p>
                     </div>
                     <div className="flex justify-between mt-auto">
@@ -470,28 +470,28 @@ export default function CheckOut() {
             {cartItems.map((item) => {
               return (
                 <div
-                  key={item.id}
+                  key={item.product.id}
                   className="flex justify-evenly box-content border-t-2 mb-2 py-5"
                 >
                   <div className="w-24 h-24 border-2 border-gray-200 rounded-lg flex-shrink-0 overflow-hidden mr-3">
                     <img
                       className="w-full h-full object-cover object-center"
-                      src={item.thumbnail}
-                      alt={item.title}
+                      src={item.product.thumbnail}
+                      alt={item.product.title}
                     />
                   </div>
                   <div className="flex flex-col w-full ">
                     <div>
                       <div className="flex justify-between">
                         <h3 className="text-base truncate font-normal">
-                          {item.title}
+                          {item.product.title}
                         </h3>
                         <h3 className="text-sm sm:text-base font-normal ml-2">
-                          ${item.price}
+                          ${item.product.price}
                         </h3>
                       </div>
                       <p className="text-base text-gray-400">
-                        Rating:{item.rating}
+                        Rating:{item.product.rating}
                       </p>
                     </div>
                     <div className="flex justify-between mt-auto">

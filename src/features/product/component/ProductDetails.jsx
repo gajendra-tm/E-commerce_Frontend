@@ -85,17 +85,15 @@ export default function ProductDetails() {
 
   const handleCart = (e) => {
     e.preventDefault();
-    if (cartItems.findIndex((items) => items.productId === product.id) < 0) {
+    if (cartItems.findIndex((items) => items.product.id === product.id) < 0) {
       //findIndex returns -1 if there is no index, so we put the <0 condition to check true & false
       const newItems = {
-        ...product,
-        productId: product.id,
+        product: product.id,
         quantity: 1,
         user: user.id,
       };
-      delete newItems["id"]; // to delete the default id that come with product details
       dispatch(addToCartAsync(newItems));
-      toast.success("item added successfully", {
+      toast.success("item added to Cart", {
         //this needs to be reffered from the backend only
         position: "top-center",
         autoClose: 1000,

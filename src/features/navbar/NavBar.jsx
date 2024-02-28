@@ -7,7 +7,7 @@ import { selectLoggedInUser } from "../auth/authSlice";
 import { Zoom, toast } from "react-toastify";
 
 const navLists = [
-  { name: "Products", href: "#", users: true },
+  { name: "Products", href: "#", user: true },
   { name: "Products", href: "/admin", admin: true },
   { name: "Orders", href: "/admin/admin-order", admin: true },
 ];

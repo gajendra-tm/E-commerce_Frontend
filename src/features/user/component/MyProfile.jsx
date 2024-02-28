@@ -7,7 +7,7 @@ import { useForm } from "react-hook-form";
 export default function MyProfile() {
   const [editUserAddress, setEditUserAddress] = useState(-1);
   const [newUserAddress, setNewUserAddress] = useState(false);
-  const user = useSelector(selectUserInfo);
+  const userInfo = useSelector(selectUserInfo);
   const dispatch = useDispatch();
 
   const {
@@ -19,14 +19,14 @@ export default function MyProfile() {
   } = useForm();
 
   const handleEdit = (updatedData, index) => {
-    const updtedUser = { ...user, addresses: [...user.addresses] };
+    const updtedUser = { ...userInfo, addresses: [...userInfo.addresses] };
     updtedUser.addresses.splice(index, 1, updatedData);
     dispatch(updateUserAsync(updtedUser));
     setEditUserAddress(-1);
   };
 
   const handleRemove = (e, index) => {
-    const updatedUser = { ...user, addresses: [...user.addresses] };
+    const updatedUser = { ...userInfo, addresses: [...userInfo.addresses] };
     updatedUser.addresses.splice(index, 1);
     dispatch(updateUserAsync(updatedUser));
   };
@@ -34,7 +34,7 @@ export default function MyProfile() {
   const handleForm = (index) => {
     setNewUserAddress(false);
     setEditUserAddress(index);
-    const address = user.addresses[index];
+    const address = userInfo.addresses[index];
     setValue("email", address.email);
     setValue("fullname", address.fullname);
     setValue("address", address.address);
@@ -54,7 +54,7 @@ export default function MyProfile() {
             </h1>
           </div>
           <h3 className="text-green-500 text-base font-medium tracking-wide">
-            User email : {user.email}
+            User email : {userInfo.email}
           </h3>
           <div className="border-t-2 border-gray-300 py-5 mt-2 ">
             
@@ -77,8 +77,8 @@ export default function MyProfile() {
                   onSubmit={handleSubmit((data) => {
                     dispatch(
                       updateUserAsync({
-                        ...user,
-                        addresses: [...user.addresses, data],
+                        ...userInfo,
+                        addresses: [...userInfo.addresses, data],
                       })
                     );
                     reset();
@@ -234,7 +234,7 @@ export default function MyProfile() {
             </div>
 
             {/* address edit section */}
-            {user.addresses.map((address, index) => {
+            {userInfo.addresses.map((address, index) => {
               return (
                 <div
                   key={index}

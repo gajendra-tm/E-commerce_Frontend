@@ -4,12 +4,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, Navigate } from "react-router-dom";
 import {
   checkUserAsync,
+  selectLoggedInError,
   selectLoggedInUser,
 } from "../authSlice";
 import { Zoom, toast } from "react-toastify";
 
 export default function SignUp() {
   const loggedInUser = useSelector(selectLoggedInUser);
+  const userError = useSelector(selectLoggedInError);
   const dispatch = useDispatch();
 
   const {
@@ -106,12 +108,15 @@ export default function SignUp() {
                   className="w-full h-full p-2 border border-gray-300 shadow-sm rounded-md outline-blue-700 "
                   id="password"
                   {...register("password", {
-                    required: "passowrd is required",
+                    required: "password is required",
                   })}
                   type="password"
                 />
                 {errors.password && (
                   <p className=" text-red-500">{errors.password.message}</p>
+                )}
+                {userError && (
+                  <p className=" text-red-500">{userError}</p>
                 )}
               </div>
             </div>

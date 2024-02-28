@@ -12,16 +12,17 @@ export default function Cart() {
   const dispatch = useDispatch();
 
   const totalPrice = cartItems.reduce(
-    (amount, item) => item.price * item.quantity + amount,
+    (amount, item) => item.product.price * item.quantity + amount,
     0
   );
+
   const totalItems = cartItems.reduce(
     (total, item) => item.quantity + total,
     0
   );
 
   const handleUpdate = (e, item) => {
-    dispatch(updateCartItemsAsync({ ...item, quantity: +e.target.value }));
+    dispatch(updateCartItemsAsync({ id:item.id, quantity: +e.target.value }))
   };
 
   const handleDelete = (e, item) => {
@@ -31,7 +32,7 @@ export default function Cart() {
 
   return (
     <>
-      {!cartItems.length && <Navigate to="/"></Navigate>}
+      {!cartItems.length && <Navigate to="/" replace={true}></Navigate>}
       <div className="flex flex-col justify-center items-center py-20 max-w-full min-h-full">
         <div className="p-4 w-full sm:w-9/12 bg-white">
           <div className="flex">
@@ -40,28 +41,28 @@ export default function Cart() {
           {cartItems.map((item) => {
             return (
               <div
-                key={item.id}
+                key={item.product.id}
                 className="flex justify-evenly border-t-2 mb-2 py-5"
               >
                 <div className="w-24 sm:w-32 h-24 sm:h-32 flex-shrink-0 overflow-hidden mr-3">
                   <img
                     className="w-full h-full object-cover object-center"
-                    src={item.thumbnail}
-                    alt={item.title}
+                    src={item.product.thumbnail}
+                    alt={item.product.title}
                   />
                 </div>
                 <div className="flex flex-col w-full ">
                   <div>
                     <div className="flex justify-between">
                       <h3 className="text-sm sm:text-base truncate font-normal">
-                        {item.title}
+                        {item.product.title}
                       </h3>
                       <h3 className="text-sm sm:text-base font-medium ml-2">
-                        ${item.price}
+                        ${item.product.price}
                       </h3>
                     </div>
                     <p className="text-sm sm:text-base text-gray-400">
-                      Rating:{item.rating}
+                      Rating:{item.product.rating}
                     </p>
                   </div>
                   <div className="flex justify-between mt-auto">

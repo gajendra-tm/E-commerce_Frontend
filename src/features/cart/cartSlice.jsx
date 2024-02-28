@@ -50,8 +50,8 @@ const cartSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {},
-  extraReducers: (bulider) => {
-    bulider
+  extraReducers: (builder) => {
+    builder
       .addCase(addToCartAsync.pending, (state) => {
         state.status = "Loading";
       })
