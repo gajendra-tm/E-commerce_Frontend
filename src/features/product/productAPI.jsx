@@ -1,36 +1,35 @@
-export const fetchAllProducts = async () => {
-  const response = await fetch("http://localhost:8080/products");
+export const fetchProductsById = async (id) => {
+  const response = await fetch("http://localhost:8080/products/" + id);
   const data = await response.json();
   return { data };
 };
 
-export const fetchProductsById = async (id)=>{
-  const response = await fetch("http://localhost:8080/products/"+id)
+export const createProduct = async (product) => {
+  const response = await fetch("http://localhost:8080/products/", {
+    method: "POST",
+    body: JSON.stringify(product),
+    headers: { "content-type": "application/json" },
+  });
   const data = await response.json();
-  return {data};
-}
+  return { data };
+};
 
-export const createProduct = async(product)=>{
-  const response = await fetch("http://localhost:8080/products/",{
-    method:"POST",
-    body:JSON.stringify(product),
-    headers:{"content-type":"application/json"}
-  })
-  const data = await response.json()
-  return{data};
-}
+export const updateProduct = async (product) => {
+  const response = await fetch("http://localhost:8080/products/" + product.id, {
+    method: "PATCH",
+    body: JSON.stringify(product),
+    headers: { "content-type": "application/json" },
+  });
+  const data = await response.json();
+  return { data };
+};
 
-export const updateProduct = async(product)=>{
-  const response = await fetch("http://localhost:8080/products/"+product.id,{
-    method:"PATCH",
-    body:JSON.stringify(product),
-    headers:{"content-type":"application/json"}
-  })
-  const data = await response.json()
-  return{data};
-}
-
-export const fetchProductsByFilters = async (filter, sort, pagination) => {
+export const fetchProductsByFilters = async (
+  filter,
+  sort,
+  pagination,
+  admin,
+) => {
   let queryString = "";
   // need to add multi levels on server
   for (let key in filter) {
@@ -45,6 +44,10 @@ export const fetchProductsByFilters = async (filter, sort, pagination) => {
   }
   for (let key in pagination) {
     queryString += `${key}=${pagination[key]}&`;
+  }
+
+  if(admin){
+    queryString += "admin=true"
   }
   const response = await fetch("http://localhost:8080/products?" + queryString);
   const data = await response.json();

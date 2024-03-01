@@ -9,7 +9,7 @@ import {
 export default function AdminOrder() {
   const [page, setPage] = useState(1);
   const [editOrder, setEditOrder] = useState(-1);
-  const [sort, setSort] = useState({_sort:"id", _order:"asc"});
+  const [sort, setSort] = useState({_sort:"totalPrice", _order:"asc"});
   const dispatch = useDispatch();
   const allOrders = useSelector(selectOrderDetails);
 
@@ -58,13 +58,13 @@ export default function AdminOrder() {
                 className="py-3 px-1 lg:px-5 xl:px-10 cursor-pointer"
                 onClick={() =>
                   handleSort({
-                    sort: "id",
+                    sort: "totalPrice",
                     order: sort._order === "asc" ? "desc" : "asc",
                   })
                 }
               >
                 Order Id
-                {sort._sort === "id" && sort._order !== "asc" ? (
+                {sort._sort === "totalPrice" && sort._order !== "asc" ? (
                    <svg
                     className="inline ml-1"
                     width="16px"
@@ -135,13 +135,13 @@ export default function AdminOrder() {
                     <div className="flex flex-col justify-center items-center">
                       <div className="xl:mr-2">
                         <img
-                          src={orders.cartItems[0].thumbnail}
+                          src={orders.cartItems[0].product.thumbnail}
                           alt="image"
                           className=" w-16 h-16 lg:w-20 lg:h-20 xl:w-24 xl:h-24 object-fill object-center"
                         />
                       </div>
                       <div>
-                        <p>{orders.cartItems[0].title}</p>
+                        <p>{orders.cartItems[0].product.title}</p>
                       </div>
                     </div>
                   </td>

@@ -11,6 +11,7 @@ import {
   updateProductAsync,
 } from "../../product/productSlice";
 import { useParams } from "react-router-dom";
+import { toast, Zoom } from "react-toastify";
 
 export default function AdminProductForm() {
   const dispatch = useDispatch();
@@ -85,9 +86,31 @@ export default function AdminProductForm() {
               product.id = params.id;
               product.rating = selectedProducts.rating;
               dispatch(updateProductAsync(product));
+              toast.success("Product Updated", {
+                position: "top-center",
+                autoClose: 1000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+                transition: Zoom,
+              });
               reset();
             } else {
               dispatch(createProductAsync(product));
+              toast.success("Product Created", {
+                position: "top-center",
+                autoClose: 1000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+                transition: Zoom,
+              });
               reset();
             }
           })}

@@ -74,7 +74,7 @@ export default function ProductFilter() {
 
   useEffect(() => {
     const pagination = { _page: page, _limit: 10 };
-    dispatch(fetchProductsByFiltersAsync({ filter, sort, pagination }));
+    dispatch(fetchProductsByFiltersAsync({ filter, sort, pagination}));
   }, [dispatch, filter, sort, page]);
 
   useEffect(() => {
