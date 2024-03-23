@@ -4,12 +4,14 @@ import { Link, Navigate } from "react-router-dom";
 import {
   deleteCartItemsAsync,
   selectCartItems,
+  selectCartLoaded,
   updateCartItemsAsync,
 } from "../cartSlice";
 
 export default function Cart() {
-  const cartItems = useSelector(selectCartItems);
   const dispatch = useDispatch();
+  const cartItems = useSelector(selectCartItems);
+  const cratLoaded = useSelector(selectCartLoaded)
 
   const totalPrice = cartItems.reduce(
     (amount, item) => item.product.price * item.quantity + amount,
@@ -32,7 +34,7 @@ export default function Cart() {
 
   return (
     <>
-      {!cartItems.length && <Navigate to="/" replace={true}></Navigate>}
+      {cratLoaded && !cartItems.length && <Navigate to="/" replace={true}></Navigate>}
       <div className="flex flex-col justify-center items-center py-20 max-w-full min-h-full">
         <div className="p-4 w-full sm:w-9/12 bg-white">
           <div className="flex">

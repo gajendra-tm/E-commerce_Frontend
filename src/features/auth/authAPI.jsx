@@ -9,22 +9,37 @@ export const createUser = async (userData) => {
 };
 
 // to check the entered login details with available data
-export const checkUser = async (loggedData) => {
+export const loginUser = async (loggedData) => {
   try {
     const response = await fetch("http://localhost:8080/auth/login", {
-      method: "POST",
-      body: JSON.stringify(loggedData),
-      headers: { "content-type": "application/json" },
-    });
+    method: "POST",
+    body: JSON.stringify(loggedData),
+    headers: { "Content-Type": "application/json" },
+  });
     if (response.ok) {
       const data = await response.json();
       return { data };
     }else{
-      const error = await response.json();
+      const error = await response.text();
       return (error)
     }
   } catch (error) {
-    return ({message: "the page you are looking for is not found"});
+    return ({message: "404, the page you are looking for is not found"});
+  }
+};
+
+export const checkUser = async () => {
+  try {
+    const response = await fetch("http://localhost:8080/auth/check");
+    if (response.ok) {
+      const data = await response.json();
+      return { data };
+    }else{
+      const error = await response.text();
+      return (error)
+    }
+  } catch (error) {
+    return ({message: "404, the page you are looking for is not found"});
   }
 };
 

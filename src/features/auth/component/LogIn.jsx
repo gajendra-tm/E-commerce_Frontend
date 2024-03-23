@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, Navigate } from "react-router-dom";
 import {
-  checkUserAsync,
+  loginUserAsync,
   selectLoggedInError,
   selectLoggedInUser,
 } from "../authSlice";
@@ -30,7 +30,7 @@ export default function SignUp() {
           pauseOnHover: true,
           draggable: true,
           progress: undefined,
-          theme: "light",
+          theme: "light", 
           transition: Zoom,
         })
       : "null";
@@ -56,7 +56,7 @@ export default function SignUp() {
             className="mt-10"
             onSubmit={handleSubmit((data) => {
               dispatch(
-                checkUserAsync({ email: data.email, password: data.password })
+                loginUserAsync({ email: data.email, password: data.password })
               );
             })}
           >

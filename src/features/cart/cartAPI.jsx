@@ -8,8 +8,8 @@ export const addToCart = async (cartItems) => {
   return { data };
 };
 
-export const fetchCartItemsByUserId = async (userId) => {
-  const response = await fetch(" http://localhost:8080/cart?user=" + userId);
+export const fetchCartItemsByUserId = async () => {
+  const response = await fetch(" http://localhost:8080/cart");
   const data = await response.json();
   return { data };
 };
@@ -33,8 +33,8 @@ export const deleteCartItems = async (itemId)=>{
   return {data:itemId}
 }
 
-export const resetCart = async (userId)=>{
-  const response = await fetchCartItemsByUserId(userId);
+export const resetCart = async ()=>{
+  const response = await fetchCartItemsByUserId();
   const items = response.data;
   for (let item of items){
 await deleteCartItems(item)

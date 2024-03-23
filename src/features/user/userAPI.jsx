@@ -1,11 +1,11 @@
-export const fetchLoggedInUserOrders = async(userId)=>{
-    const response = await fetch("http://localhost:8080/orders/user/"+userId);
+export const fetchLoggedInUserOrders = async()=>{
+    const response = await fetch("http://localhost:8080/orders/user/");
     const data = await response.json();
     return {data};
 };
 
-export const fetchLoggedInUserInfo= async(userId)=>{
-    const response = await fetch("http://localhost:8080/users/"+userId);
+export const fetchLoggedInUserInfo= async()=>{
+    const response = await fetch("http://localhost:8080/users/own");
     const data = await response.json();
     return {data};
 };

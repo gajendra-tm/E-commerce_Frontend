@@ -7,13 +7,12 @@ import {
   updateCartItemsAsync,
   deleteCartItemsAsync,
   resetCartAsync,
+  selectCartLoaded,
 } from "../cartSlice";
 import { useForm } from "react-hook-form";
-import {
-  selectUserInfo,
-  updateUserAsync,
-} from "../../user/userSlice";
+import { selectUserInfo, updateUserAsync } from "../../user/userSlice";
 import { createOrderAsync } from "../../orders/orderSlice";
+import { Zoom, toast } from "react-toastify";
 
 //order summary animation
 const staggerMenuItems = stagger(0.01, { startDelay: 0.1 });
@@ -52,14 +51,15 @@ function useOrderAnimation(orderIsOpen) {
 }
 
 export default function CheckOut() {
+  const dispatch = useDispatch();
   const [orderIsOpen, setOrderIsOpen] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState();
   const [selectedPayment, setSelectedPayment] = useState("Online/UPI");
   const [paymentDone, setPaymentDone] = useState(false); //need to be updated with the payment response of payment gateway
-  const dispatch = useDispatch();
   const orderscope = useOrderAnimation(orderIsOpen);
   const cartItems = useSelector(selectCartItems);
   const userInfo = useSelector(selectUserInfo);
+  const cartLoaded = useSelector(selectCartLoaded);
 
   const {
     register,
@@ -78,7 +78,7 @@ export default function CheckOut() {
   );
 
   const handleUpdate = (e, item) => {
-    dispatch(updateCartItemsAsync({ id:item.id, quantity: +e.target.value }));
+    dispatch(updateCartItemsAsync({ id: item.id, quantity: +e.target.value }));
   };
 
   const handleDelete = (e, item) => {
@@ -97,7 +97,6 @@ export default function CheckOut() {
   const handleOrders = () => {
     if (selectedAddress && selectedPayment) {
       const orders = {
-        user:userInfo.id,
         selectedAddress,
         selectedPayment,
         cartItems,
@@ -106,14 +105,26 @@ export default function CheckOut() {
         status: "pending", // this can be change/updated by the admin
       };
       dispatch(createOrderAsync(orders));
-      dispatch(resetCartAsync(userInfo.id));
+      dispatch(resetCartAsync());
+    }else{
+      toast.error("Select the Address", {
+        position: "top-center",
+        autoClose: 1500,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Zoom,
+      })
     }
   };
 
   return (
     <>
-      {!cartItems.length && <Navigate to="/"></Navigate>}
-      {paymentDone && <Navigate to="/order-successful"></Navigate>}
+      {!cartItems.length && cartLoaded && <Navigate to="/"></Navigate>}
+      {paymentDone && selectedAddress && <Navigate to="/order-successful"></Navigate>}
       <div
         className="grid grid-cols-1 md:grid-cols-4 p-10 relative bg-gray-100 max-w-full min-h-screen"
         ref={orderscope}
@@ -291,7 +302,7 @@ export default function CheckOut() {
               Choose from Existing address
             </p>
             <div>
-              {userInfo.addresses.map((address, index) => {
+              {userInfo && userInfo.addresses.map((address, index) => {
                 return (
                   <div
                     key={address.phone}

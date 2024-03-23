@@ -84,7 +84,7 @@ export default function ProductFilter() {
   useEffect(()=>{
     dispatch(fetchBrandsAsync());
     dispatch(fetchCategoriesAsync());
-  },[])
+  },[dispatch])
 
   return (
     <>

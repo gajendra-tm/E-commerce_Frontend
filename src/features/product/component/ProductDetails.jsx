@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProductsByIdAsync, selectProductsById } from "../productSlice";
-import { selectLoggedInUser } from "../../auth/authSlice";
 import { useParams } from "react-router-dom";
 import { addToCartAsync, selectCartItems } from "../../cart/cartSlice";
 import { toast, Zoom } from "react-toastify";
@@ -80,7 +79,6 @@ export default function ProductDetails() {
   const dispatch = useDispatch();
   const product = useSelector(selectProductsById);
   const cartItems = useSelector(selectCartItems);
-  const user = useSelector(selectLoggedInUser);
   const params = useParams();
 
   const handleCart = (e) => {
@@ -90,8 +88,7 @@ export default function ProductDetails() {
       const newItems = {
         product: product.id,
         quantity: 1,
-        user: user.id,
-      };
+      }; 
       dispatch(addToCartAsync(newItems));
       toast.success("item added to Cart", {
         //this needs to be reffered from the backend only
