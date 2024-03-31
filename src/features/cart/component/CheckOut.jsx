@@ -6,12 +6,11 @@ import {
   selectCartItems,
   updateCartItemsAsync,
   deleteCartItemsAsync,
-  resetCartAsync,
   selectCartLoaded,
 } from "../cartSlice";
 import { useForm } from "react-hook-form";
 import { selectUserInfo, updateUserAsync } from "../../user/userSlice";
-import { createOrderAsync } from "../../orders/orderSlice";
+import { createOrderAsync, selectCurrentOrder } from "../../orders/orderSlice";
 import { Zoom, toast } from "react-toastify";
 
 //order summary animation
@@ -45,7 +44,7 @@ function useOrderAnimation(orderIsOpen) {
         delay: orderIsOpen ? staggerMenuItems : 0,
       }
     );
-  }, [orderIsOpen]);
+  }, [orderIsOpen, animate]);
 
   return orderscope;
 }
@@ -54,12 +53,13 @@ export default function CheckOut() {
   const dispatch = useDispatch();
   const [orderIsOpen, setOrderIsOpen] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState();
-  const [selectedPayment, setSelectedPayment] = useState("Online/UPI");
-  const [paymentDone, setPaymentDone] = useState(false); //need to be updated with the payment response of payment gateway
+  const [selectedPayment, setSelectedPayment] = useState();
+  // const [paymentDone, setPaymentDone] = useState(false); //need to be updated with the payment response of payment gateway
   const orderscope = useOrderAnimation(orderIsOpen);
   const cartItems = useSelector(selectCartItems);
   const userInfo = useSelector(selectUserInfo);
   const cartLoaded = useSelector(selectCartLoaded);
+  const currentOrder = useSelector(selectCurrentOrder);
 
   const {
     register,
@@ -105,9 +105,8 @@ export default function CheckOut() {
         status: "pending", // this can be change/updated by the admin
       };
       dispatch(createOrderAsync(orders));
-      dispatch(resetCartAsync());
-    }else{
-      toast.error("Select the Address", {
+    } else {
+      toast.error("Select the Address / Payment", {
         position: "top-center",
         autoClose: 1500,
         hideProgressBar: true,
@@ -117,14 +116,19 @@ export default function CheckOut() {
         progress: undefined,
         theme: "light",
         transition: Zoom,
-      })
+      });
     }
   };
 
   return (
     <>
-      {!cartItems.length && cartLoaded && <Navigate to="/"></Navigate>}
-      {paymentDone && selectedAddress && <Navigate to="/order-successful"></Navigate>}
+      {cartLoaded && !cartItems.length && <Navigate to="/"></Navigate>}
+      {currentOrder && currentOrder.selectedPayment === "cash" && (
+        <Navigate to="/order-successful-cash"></Navigate>
+      )}
+      {currentOrder && currentOrder.selectedPayment === "card" && (
+        <Navigate to="/stripe-checkout"></Navigate>
+      )}
       <div
         className="grid grid-cols-1 md:grid-cols-4 p-10 relative bg-gray-100 max-w-full min-h-screen"
         ref={orderscope}
@@ -302,7 +306,7 @@ export default function CheckOut() {
               Choose from Existing address
             </p>
             <div>
-              {userInfo && userInfo.addresses.map((address, index) => {
+              {userInfo?.addresses.map((address, index) => {
                 return (
                   <div
                     key={address.phone}
@@ -341,13 +345,13 @@ export default function CheckOut() {
                 <div className="flex items-center space-x-2 mb-2 text-sm font-medium text-gray-600">
                   <input
                     onChange={handlePayment}
-                    id="Online/UPI"
-                    value="Online/UPI"
-                    checked={selectedPayment === "Online/UPI"}
+                    id="card"
+                    value="card"
+                    checked={selectedPayment === "card"}
                     name="payment"
                     type="radio"
                   />
-                  <h3>Online/UPI</h3>
+                  <h3>Card</h3>
                 </div>
                 <div className="flex items-center space-x-2 text-sm font-medium text-gray-600">
                   <input
@@ -454,7 +458,7 @@ export default function CheckOut() {
               <div>
                 <button
                   onClick={() => {
-                    handleOrders(), setPaymentDone(true);
+                    handleOrders();
                   }}
                   className="flex justify-center cursor-pointer items-center my-8 hover:bg-blue-600 rounded-lg w-full h-10 bg-blue-700 text-white text-base font-medium"
                 >
@@ -543,7 +547,7 @@ export default function CheckOut() {
             <div>
               <button
                 onClick={() => {
-                  handleOrders(), setPaymentDone(true);
+                  handleOrders();
                 }}
                 className="flex justify-center cursor-pointer items-center my-8 hover:bg-blue-600 rounded-lg w-full h-12 bg-blue-700 text-white text-base font-medium"
               >
