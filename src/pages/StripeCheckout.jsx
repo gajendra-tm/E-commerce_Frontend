@@ -22,18 +22,14 @@ export default function App() {
 
   useEffect(() => {
     // Create PaymentIntent as soon as the page loads
-    fetch("http://localhost:8080/create-payment-intent", {
+    fetch("/create-payment-intent", {
       method: "POST",
       body: JSON.stringify({
         totalPrice: currentOrder.totalPrice,
         selectedAddress: currentOrder.selectedAddress,
+        order_Id: currentOrder.id,
       }),
       headers: { "Content-Type": "application/json" },
-      meta: {
-        order_id: currentOrder.id,
-      }, //this info goes to stripe and then to webhooks directly,
-      //by this we can conclude that payment was successful,
-      //even if client side is closed expectedly or unexpectedly after payment.
     })
       .then((res) => res.json())
       .then((data) => setClientSecret(data.clientSecret));

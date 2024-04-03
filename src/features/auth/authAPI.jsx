@@ -1,5 +1,5 @@
 export const createUser = async (userData) => {
-  const response = await fetch("http://localhost:8080/auth/signup", {
+  const response = await fetch("/auth/signup", {
     method: "POST",
     body: JSON.stringify(userData),
     headers: { "Content-type": "application/json" },
@@ -11,7 +11,7 @@ export const createUser = async (userData) => {
 // to check the entered login details with available data
 export const loginUser = async (loggedData) => {
   try {
-    const response = await fetch("http://localhost:8080/auth/login", {
+    const response = await fetch("/auth/login", {
     method: "POST",
     body: JSON.stringify(loggedData),
     headers: { "Content-Type": "application/json" },
@@ -30,7 +30,7 @@ export const loginUser = async (loggedData) => {
 
 export const checkUser = async () => {
   try {
-    const response = await fetch("http://localhost:8080/auth/check");
+    const response = await fetch("/auth/check");
     if (response.ok) {
       const data = await response.json();
       return { data };

@@ -4,6 +4,7 @@ import { createOrder, fetchAllOrders, updateOrders } from "./orderAPI";
 const initialState = {
   status: "Idle",
   orderDetails: [],
+  currentOrder: null,
   totalOrders: 0,
 };
 
@@ -16,16 +17,16 @@ export const createOrderAsync = createAsyncThunk(
 );
 
 export const fetchAllOrdersAsync = createAsyncThunk(
-    "orders/fetchAllOrders",
-    async ({sort})=>{
-        const response = await fetchAllOrders(sort);
-        return response.data;
-    }
+  "orders/fetchAllOrders",
+  async ({ sort }) => {
+    const response = await fetchAllOrders(sort);
+    return response.data;
+  }
 );
 
 export const updateOrdersAsync = createAsyncThunk(
   "orders/updateOrders",
-  async(order)=>{
+  async (order) => {
     const response = await updateOrders(order);
     return response.data;
   }
@@ -34,7 +35,11 @@ export const updateOrdersAsync = createAsyncThunk(
 const orderSlice = createSlice({
   name: "orders",
   initialState,
-  reducers: {},
+  reducers: {
+    resetCurrentOrder: (state) => {
+      state.currentOrder = null;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(createOrderAsync.pending, (state) => {
@@ -43,6 +48,7 @@ const orderSlice = createSlice({
       .addCase(createOrderAsync.fulfilled, (state, action) => {
         state.status = "Successful";
         state.orderDetails.push(action.payload);
+        state.currentOrder = action.payload;
       })
       .addCase(fetchAllOrdersAsync.pending, (state) => {
         state.status = "Loading";
@@ -57,12 +63,16 @@ const orderSlice = createSlice({
       })
       .addCase(updateOrdersAsync.fulfilled, (state, action) => {
         state.status = "Successful";
-        const index = state.orderDetails.findIndex((order)=>order.id === action.payload.id)
+        const index = state.orderDetails.findIndex(
+          (order) => order.id === action.payload.id
+        );
         state.orderDetails[index] = action.payload;
       });
   },
 });
 
+export const { resetCurrentOrder } = orderSlice.actions;
 export const selectOrderDetails = (state) => state.orders.orderDetails;
-export const selectTotalOrders = (state)=>state.orders.totalOrders;
+export const selectCurrentOrder = (state) => state.orders.currentOrder;
+export const selectTotalOrders = (state) => state.orders.totalOrders;
 export default orderSlice.reducer;

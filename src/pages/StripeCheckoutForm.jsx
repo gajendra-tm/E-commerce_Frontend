@@ -58,11 +58,9 @@ export default function CheckoutForm() {
       elements,
       confirmParams: {
         // Make sure to change this to your payment completion page
-        return_url: "http://localhost:5173/order-successful-online",
+        return_url: "/order-successful-online",
       },
     });
-
-    console.log(error)
 
     // This point will only be reached if there is an immediate error when
     // confirming the payment. Otherwise, your customer will be redirected to
