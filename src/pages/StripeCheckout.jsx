@@ -33,7 +33,7 @@ export default function App() {
     })
       .then((res) => res.json())
       .then((data) => setClientSecret(data.clientSecret));
-  }, []);
+  }, [currentOrder]);
 
   const appearance = {
     theme: "stripe",
