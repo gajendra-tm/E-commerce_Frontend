@@ -22,8 +22,13 @@ export default function AdminOrder() {
     setSort(sorting);
   };
 
-  const handleUpdate = (e, orders) => {
-    const updatedOrder = { ...orders, status: e.target.value };
+  const handleOrderUpdate = (e, orders) => {
+    const updatedOrder = { ...orders, orderStatus: e.target.value };
+    dispatch(updateOrdersAsync(updatedOrder));
+    setEditOrder(-1);
+  };
+  const handlePaymentUpdate = (e, orders) => {
+    const updatedOrder = { ...orders, paymentStatus: e.target.value };
     dispatch(updateOrdersAsync(updatedOrder));
     setEditOrder(-1);
   };
@@ -35,6 +40,8 @@ export default function AdminOrder() {
       case "on-transit":
         return "bg-violet-300 text-violet-700";
       case "delivered":
+        return "bg-green-300 text-green-700";
+        case "received":
         return "bg-green-300 text-green-700";
       case "cancelled":
         return "bg-red-300 text-red-700";
@@ -118,8 +125,10 @@ export default function AdminOrder() {
               </th>
               <th className="py-3 px-1 lg:px-5 xl:px-10">Product Details</th>
               <th className="py-3 px-1 lg:px-5 xl:px-10">Shipping Address</th>
+              <th className="py-3 px-1 lg:px-5 xl:px-10">Order Status</th>
               <th className="py-3 px-1 lg:px-5 xl:px-10">Amount</th>
-              <th className="py-3 px-1 lg:px-5 xl:px-10">Status</th>
+              <th className="py-3 px-1 lg:px-5 xl:px-10">Payment Mode</th>
+              <th className="py-3 px-1 lg:px-5 xl:px-10">Payment Status</th>
               <th className="py-3 px-1 lg:px-5 xl:px-10">Actions</th>
             </tr>
           </thead>
@@ -155,13 +164,12 @@ export default function AdminOrder() {
                       <p>{orders.selectedAddress.phone}</p>
                     </div>
                   </td>
-                  <td className="py-3 px-10">${orders.totalPrice}</td>
                   <td className="py-3 px-10">
                     {editOrder === orders.id ? (
                       <div>
                         <select
                           className="rounded-lg bg-gray-200"
-                          onChange={(e) => handleUpdate(e, orders)}
+                          onChange={(e) => handleOrderUpdate(e, orders)}
                         >
                           <option value="choose">--choose-status--</option>
                           <option value="pending">Pending</option>
@@ -173,10 +181,34 @@ export default function AdminOrder() {
                     ) : (
                       <div
                         className={`${chooseColor(
-                          orders.status
+                          orders.orderStatus
                         )} rounded-full p-2`}
                       >
-                        <span>{orders.status}</span>
+                        <span>{orders.orderStatus}</span>
+                      </div>
+                    )}
+                  </td>
+                  <td className="py-3 px-10">${orders.totalPrice}</td>
+                  <td className="py-3 px-10">{orders.selectedPayment}</td>
+                  <td className="py-3 px-10">
+                    {editOrder === orders.id ? (
+                      <div>
+                        <select
+                          className="rounded-lg bg-gray-200"
+                          onChange={(e) => handlePaymentUpdate(e, orders)}
+                        >
+                          <option value="choose">--choose-status--</option>
+                          <option value="pending">Pending</option>
+                          <option value="received">Received</option>
+                        </select>
+                      </div>
+                    ) : (
+                      <div
+                        className={`${chooseColor(
+                          orders.paymentStatus
+                        )} rounded-full p-2`}
+                      >
+                        <span>{orders.paymentStatus}</span>
                       </div>
                     )}
                   </td>
