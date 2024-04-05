@@ -20,12 +20,15 @@ export default function MyOrders() {
           <div key={order.id} className="flex flex-col justify-center items-center pt-5 max-w-full min-h-full">
               <div className="p-4 w-full sm:w-9/12 bg-gray-100 rounded-md">
                 <div className="flex">
-                  <h1 className="text-xl md:text-2xl font-bold tracking-wide mb-2">
+                  <h1 className="text-lg md:text-2xl font-bold tracking-wide mb-2 truncate">
                     Order : #{order.id}
                   </h1>
                 </div>
-                <h3 className="text-red-500 text-base font-medium tracking-wide">
-                  Order status : {order.status}
+                <h3 className="flex justify-between text-red-500 text-base font-medium tracking-wide">
+                  Order status : {order.orderStatus}
+                  <span>
+                    Payment status : {order.paymentStatus}
+                  </span>
                 </h3>
                 <div className="flex justify-evenly border-t-2 border-gray-300 mt-2 box-border mb-2 py-5">
                   <div className="w-20 sm:w-32 h-20 sm:h-32 flex-shrink-0 overflow-hidden mr-3">

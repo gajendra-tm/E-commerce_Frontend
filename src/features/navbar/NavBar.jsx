@@ -7,7 +7,7 @@ import { Zoom, toast } from "react-toastify";
 import { selectUserInfo } from "../user/userSlice";
 
 const navLists = [
-  { name: "Products", href: "#", user: true },
+  { name: "Products", href: "/", user: true },
   { name: "Products", href: "/admin", admin: true },
   { name: "Orders", href: "/admin/admin-order", admin: true },
 ];
@@ -30,51 +30,53 @@ const Path = (props) => (
     {...props}
   />
 );
-[];
-// function useMenuAnimation(isOpen) {
-//   const [scope, animate] = useAnimate();
 
-//   useEffect(() => {
-//     const menuAnimations = isOpen
-//       ? [
-//           [
-//             "div",
-//             { transform: "translateX(0%)" },
-//             { ease: [0.08, 0.65, 0.53, 0.96], duration: 0.3 },
-//           ],
-//           [
-//             "li",
-//             { transform: "scale(1)", opacity: 1, filter: "blur(0px)" },
-//             { delay: stagger(0.05), at: "-0.2" },
-//           ],
-//         ]
-//       : [
-//           [
-//             "li",
-//             { transform: "scale(0.5)", opacity: 0, filter: "blur(10px)" },
-//             { delay: stagger(0.05, { from: "last" }), at: "<" },
-//           ],
-//           ["div", { transform: "translateX(100%)" }, { at: "-0.6" }],
-//         ];
+function useMenuAnimation(isOpen) {
+  const [scope, animate] = useAnimate();
 
-//     animate([
-//       [
-//         "path.top",
-//         { d: isOpen ? "M 3 16.5 L 17 2.5" : "M 2 2.5 L 20 2.5" },
-//         { at: "<" },
-//       ],
-//       ["path.middle", { opacity: isOpen ? 0 : 1 }, { at: "<" }],
-//       [
-//         "path.bottom",
-//         { d: isOpen ? "M 3 2.5 L 17 16.346" : "M 2 16.346 L 20 16.346" },
-//         { at: "<" },
-//       ],
-//       ...menuAnimations,
-//     ]);
-//   }, [isOpen]);
+  useEffect(() => {
+    if (scope.current) {
+      const menuAnimations = isOpen
+        ? [
+            [
+              "div",
+              { transform: "translateX(0%)" },
+              { ease: [0.08, 0.65, 0.53, 0.96], duration: 0.3 },
+            ],
+            [
+              "li",
+              { transform: "scale(1)", opacity: 1, filter: "blur(0px)" },
+              { delay: stagger(0.05), at: "-0.2" },
+            ],
+          ]
+        : [
+            [
+              "li",
+              { transform: "scale(0.5)", opacity: 0, filter: "blur(10px)" },
+              { delay: stagger(0.05, { from: "last" }), at: "<" },
+            ],
+            ["div", { transform: "translateX(100%)" }, { at: "-0.6" }],
+          ];
 
-//   return scope;
-// }
+      animate([
+        [
+          "path.top",
+          { d: isOpen ? "M 3 16.5 L 17 2.5" : "M 2 2.5 L 20 2.5" },
+          { at: "<" },
+        ],
+        ["path.middle", { opacity: isOpen ? 0 : 1 }, { at: "<" }],
+        [
+          "path.bottom",
+          { d: isOpen ? "M 3 2.5 L 17 16.346" : "M 2 16.346 L 20 16.346" },
+          { at: "<" },
+        ],
+        ...menuAnimations,
+      ]);
+    }
+  }, [isOpen, animate, scope]);
+
+  return scope;
+}
 
 function useUserAnimation(userIsOpen) {
   const [userScope, animate] = useAnimate();
@@ -91,8 +93,8 @@ function useUserAnimation(userIsOpen) {
           },
           {
             type: "spring",
-            bounce: 0,
-            duration: 0.5,
+            bounce: 0.1,
+            duration: 0.2,
           }
         );
 
@@ -102,7 +104,7 @@ function useUserAnimation(userIsOpen) {
             ? { opacity: 1, scale: 1, filter: "blur(0px)" }
             : { opacity: 0, scale: 0.3, filter: "blur(20px)" },
           {
-            duration: 0.2,
+            duration: 0,
             delay: userIsOpen ? staggerWebItems : 0,
           }
         );
@@ -118,7 +120,7 @@ export default function NavBar({ children }) {
   const [isOpen, setIsOpen] = useState(false);
   const [userIsOpen, setUserIsOpen] = useState(false);
   const userScope = useUserAnimation(userIsOpen);
-  // const scope = useMenuAnimation(isOpen);
+  const scope = useMenuAnimation(isOpen);
   const cartItems = useSelector(selectCartItems);
   const userInfo = useSelector(selectUserInfo);
 
@@ -220,8 +222,7 @@ export default function NavBar({ children }) {
             </div>
 
             {/* mobile layout */}
-            <div className="sm:hidden relative mr-10">
-              {/* ref={scope} */}
+            <div className="sm:hidden relative mr-10" ref={scope}>
               <button className="flex" onClick={() => setIsOpen(!isOpen)}>
                 <svg width="23" height="18" viewBox="0 0 23 18">
                   <Path
@@ -248,7 +249,7 @@ export default function NavBar({ children }) {
                 </svg>
               </button>
               <div className="flex justify-start absolute px-4 top-9 -right-11 bg-gray-800 shadow-lg text-white text-lg leading-10 font-medium w-48 min-h-full">
-                <ul className="">
+                <ul>
                   {navLists.map((navList) =>
                     navList[userInfo.role] ? (
                       <li className=" hover:text-gray-400 " key={navList.name}>
@@ -264,7 +265,7 @@ export default function NavBar({ children }) {
             <h1 className=" flex items-start text-2xl font-bold">E-commerce</h1>
           </header>
           <main className=" bg-gray-300 min-h-full left-0 p-1 md:p-5">
-            <div className=" bg-white p-5 min-h-full rounded-lg">
+            <div className=" bg-white sm:p-5 min-h-full rounded-lg">
               {children}
             </div>
           </main>

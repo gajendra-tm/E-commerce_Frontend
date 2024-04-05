@@ -34,7 +34,7 @@ function useSortAnimation(sortIsOpen) {
         delay: sortIsOpen ? staggerMobileItems : 0,
       }
     );
-  }, [sortIsOpen]);
+  }, [sortIsOpen,animate]);
 
   return sortscope;
 }

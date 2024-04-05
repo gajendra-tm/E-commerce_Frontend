@@ -27,7 +27,7 @@ export default function App() {
       body: JSON.stringify({
         totalPrice: currentOrder.totalPrice,
         selectedAddress: currentOrder.selectedAddress,
-        order_Id: currentOrder.id,
+        orderId: currentOrder.id,
       }),
       headers: { "Content-Type": "application/json" },
     })
