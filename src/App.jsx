@@ -12,6 +12,7 @@ import CheckOut from "./features/cart/component/CheckOut";
 import ProductDetails from "./pages/ProductDetailsPage";
 import Protected from "./features/auth/component/Protected";
 import AdminProtected from "./features/auth/component/AdminProtected";
+import ResetPassword from "./pages/ResetPasswordPage";
 import PageNotFound from "./pages/404";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -146,6 +147,10 @@ const router = createBrowserRouter([
   {
     path: "/forgot-password",
     element: <ForgotPassword />,
+  },
+  {
+    path: "/reset-password",
+    element: < ResetPassword />,
   },
   {
     path: "/signout",
