@@ -48,9 +48,17 @@ export const checkUserAsync = createAsyncThunk("auth/checkUser", async () => {
 
 export const signOutUserAsync = createAsyncThunk(
   "auth/signOutUser",
-  async () => {
+  async ({rejectWithValue}) => {
     const response = await signOutUser();
-    return response.data;
+    try{
+      if(response){
+        return response
+      }else{
+        return rejectWithValue(response);
+      }
+    }catch(error){
+      return rejectWithValue("something went wrong")
+    }
   }
 );
 
@@ -111,13 +119,6 @@ const authSlice = createSlice({
         state.status = "Failed";
         state.error = action.payload;
       })
-      .addCase(signOutUserAsync.pending, (state) => {
-        state.status = "Loading";
-      })
-      .addCase(signOutUserAsync.fulfilled, (state) => {
-        state.status = "Successfull";
-        state.loggedInUserToken = null;
-      })
       .addCase(checkUserAsync.pending, (state) => {
         state.status = "Loading";
       })
@@ -129,6 +130,17 @@ const authSlice = createSlice({
       .addCase(checkUserAsync.rejected, (state) => {
         state.status = "Failed";
         state.userChecked = true;
+      })
+      .addCase(signOutUserAsync.pending, (state) => {
+        state.status = "Loading";
+      })
+      .addCase(signOutUserAsync.fulfilled, (state) => {
+        state.status = "Successfull";
+        state.loggedInUserToken = null;
+      })
+      .addCase(signOutUserAsync.rejected, (state,action) => {
+        state.status = "Failed";
+        state.error = action.payload;
       })
       .addCase(resetPasswordRequestAsync.pending, (state) => {
         state.status = "Loading";
