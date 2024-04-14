@@ -48,8 +48,9 @@ export const checkUserAsync = createAsyncThunk("auth/checkUser", async () => {
 
 export const signOutUserAsync = createAsyncThunk(
   "auth/signOutUser",
-  async ({rejectWithValue}) => {
+  async (_, {rejectWithValue}) => {
     const response = await signOutUser();
+    console.log(response)
     try{
       if(response){
         return response
@@ -57,6 +58,7 @@ export const signOutUserAsync = createAsyncThunk(
         return rejectWithValue(response);
       }
     }catch(error){
+      console.log(error)
       return rejectWithValue("something went wrong")
     }
   }
