@@ -22,7 +22,7 @@ export default function App() {
 
   useEffect(() => {
     // Create PaymentIntent as soon as the page loads
-    fetch("http://localhost:8080/create-payment-intent", {
+    fetch("/create-payment-intent", {
       method: "POST",
       body: JSON.stringify({
         totalPrice: currentOrder.totalPrice,
