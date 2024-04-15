@@ -1,11 +1,11 @@
 export const fetchProductsById = async (id) => {
-  const response = await fetch("/products/" + id);
+  const response = await fetch("http://localhost:8080/products/" + id);
   const data = await response.json();
   return { data };
 };
 
 export const createProduct = async (product) => {
-  const response = await fetch("/products/", {
+  const response = await fetch("http://localhost:8080/products/", {
     method: "POST",
     body: JSON.stringify(product),
     headers: { "content-type": "application/json" },
@@ -15,7 +15,7 @@ export const createProduct = async (product) => {
 };
 
 export const updateProduct = async (product) => {
-  const response = await fetch("/products/" + product.id, {
+  const response = await fetch("http://localhost:8080/products/" + product.id, {
     method: "PATCH",
     body: JSON.stringify(product),
     headers: { "content-type": "application/json" },
@@ -49,20 +49,20 @@ export const fetchProductsByFilters = async (
   if(admin){
     queryString += "admin=true"
   }
-  const response = await fetch("/products?" + queryString);
+  const response = await fetch("http://localhost:8080/products?" + queryString);
   const data = await response.json();
   const totalItems = response.headers.get("X-Total-Count");
   return { data: { products: data, totalItems: totalItems } };
 };
 
 export const fetchBrands = async () => {
-  const response = await fetch("/brands");
+  const response = await fetch("http://localhost:8080/brands");
   const data = await response.json();
   return { data };
 };
 
 export const fetchCategories = async () => {
-  const response = await fetch("/categories");
+  const response = await fetch("http://localhost:8080/categories");
   const data = await response.json();
   return { data };
 };
