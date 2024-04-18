@@ -4,7 +4,6 @@ import { addToCart, deleteCartItems, fetchCartItemsByUserId, resetCart, updateCa
 const initialState = {
   status: "Idle",
   items: [],
-  cartLoaded: false,
 };
 
 export const addToCartAsync = createAsyncThunk(
@@ -66,7 +65,6 @@ const cartSlice = createSlice({
       .addCase(fetchCartItemsByUserIdAsync.fulfilled, (state, action) => {
         state.status = "Successful";
         state.items = action.payload; //to fetch updated items from cartAPI
-        state.cartLoaded = true;
       })
       .addCase(updateCartItemsAsync.pending, (state) => {
         state.status = "Loading";
@@ -95,5 +93,4 @@ const cartSlice = createSlice({
 });
 
 export const selectCartItems = (state) => state.cart.items;
-export const selectCartLoaded = (state)=> state.cart.cartLoaded;
 export default cartSlice.reducer;

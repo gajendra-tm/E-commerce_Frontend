@@ -6,7 +6,6 @@ import {
   selectCartItems,
   updateCartItemsAsync,
   deleteCartItemsAsync,
-  selectCartLoaded,
 } from "../cartSlice";
 import { useForm } from "react-hook-form";
 import { selectUserInfo, updateUserAsync } from "../../user/userSlice";
@@ -54,11 +53,9 @@ export default function CheckOut() {
   const [orderIsOpen, setOrderIsOpen] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState();
   const [selectedPayment, setSelectedPayment] = useState();
-  // const [paymentDone, setPaymentDone] = useState(false); //need to be updated with the payment response of payment gateway
   const orderscope = useOrderAnimation(orderIsOpen);
   const cartItems = useSelector(selectCartItems);
   const userInfo = useSelector(selectUserInfo);
-  const cartLoaded = useSelector(selectCartLoaded);
   const currentOrder = useSelector(selectCurrentOrder);
 
   const {
@@ -122,7 +119,7 @@ export default function CheckOut() {
 
   return (
     <>
-      {cartLoaded && !cartItems.length && <Navigate to="/"></Navigate>}
+      {!cartItems.length && <Navigate to="/"></Navigate>}
       {currentOrder && currentOrder.selectedPayment === "cash" && (
         <Navigate to="/order-successful-cash"></Navigate>
       )}

@@ -9,7 +9,7 @@ export default function SignOut() {
   const user = useSelector(selectLoggedInUser);
   useEffect(() => {
     dispatch(signOutAsync());
-    dispatch(fetchLoggedInUserInfoAsync());
+    dispatch(fetchLoggedInUserInfoAsync(null));
   });
 
   return <>{!user && <Navigate to="/login" replace={true}></Navigate>}</>;
