@@ -35,8 +35,7 @@ export const fetchProductsByFilters = async (
   for (let key in filter) {
     const filterValues = filter[key];
     if (filterValues.length) {
-      const lastFilterValues = filterValues[filterValues.length - 1];
-      queryString += `${key}=${lastFilterValues}&`;
+      queryString += `${key}=${filterValues}&`;
     }
   }
   for (let key in sort) {

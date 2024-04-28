@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, Navigate } from "react-router-dom";
@@ -9,7 +9,8 @@ import {
 } from "../authSlice";
 import { Zoom, toast } from "react-toastify";
 
-export default function SignUp() {
+export default function LogIn() {
+  const [loginDetails, setLoginDetails] = useState(false);
   const loggedInUser = useSelector(selectLoggedInUser);
   const userError = useSelector(selectLoggedInError);
   const dispatch = useDispatch();
@@ -30,7 +31,7 @@ export default function SignUp() {
           pauseOnHover: true,
           draggable: true,
           progress: undefined,
-          theme: "light", 
+          theme: "light",
           transition: Zoom,
         })
       : "null";
@@ -48,6 +49,25 @@ export default function SignUp() {
               alt="logo"
             />
           </div>
+          <div className="flex justify-center items-center text-black w-full mt-2">
+            <button
+              onClick={() => {
+                setLoginDetails(!loginDetails);
+              }}
+              className=" bg-amber-200 hover:bg-amber-300 rounded-lg w-fit p-1"
+            >
+              Click here for login details
+            </button>
+          </div>
+          {loginDetails && (
+            <div className="flex justify-center items-center text-black bg-amber-200 rounded-lg w-full">
+              <ul>
+                <li>userEmail: testuser@gmail.com</li>
+                <li>adminEmail: testadmin@gmail.com</li>
+                <li>password: Test@123456</li>
+              </ul>
+            </div>
+          )}
           <h1 className=" text-xl sm:text-2xl mt-4 font-bold text-center">
             Log in to your Account
           </h1>
@@ -115,9 +135,7 @@ export default function SignUp() {
                 {errors.password && (
                   <p className=" text-red-500">{errors.password.message}</p>
                 )}
-                {userError && (
-                  <p className=" text-red-500">{userError}</p>
-                )}
+                {userError && <p className=" text-red-500">{userError}</p>}
               </div>
             </div>
 

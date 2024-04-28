@@ -8,7 +8,7 @@ function useSortAnimation(sortIsOpen) {
     const [sortScope, animate] = useAnimate();
   
     useEffect(() => {
-      animate(".arrow", { rotate: sortIsOpen ? 360 : 0 }, { duration: 0.3 });
+      animate(".arrow", { rotate: sortIsOpen ? 180 : 0 }, { duration: 0.3 });
   
       animate(
         "ul",
@@ -53,13 +53,13 @@ export default function ProductSortWeb({propsList}) {
               >
                 Sort
                 <svg
-                  className="inline-block sm:ml-2 arrow"
-                  style={{ transformOrigin: "50% 55%" }}
+                  className="inline-block  arrow "
+                  style={{ transformOrigin: "50% 55%"  }}
                   xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 28 28"
+                  viewBox="0 0 24 20"
                   width="25"
-                  height="25"
-                >
+                  height="30"
+                  >
                   <path d="M11.9997 13.1714L16.9495 8.22168L18.3637 9.63589L11.9997 15.9999L5.63574 9.63589L7.04996 8.22168L11.9997 13.1714Z"></path>
                 </svg>
               </motion.button>

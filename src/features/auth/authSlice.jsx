@@ -157,7 +157,7 @@ const authSlice = createSlice({
   },
 });
 
-export const selectLoggedInUser = (state) => state.auth.loggedInUserToken;
+export const selectLoggedInUser = (state) => state.auth.loggedInUserToken; // returns only id and role
 export const selectLoggedInError = (state) => state.auth.error;
 export const selectLoggedInStatus = (state) => state.auth.status;
 export const selectUserChecked = (state) => state.auth.userChecked;

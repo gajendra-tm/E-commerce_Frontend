@@ -5,76 +5,9 @@ import { useParams } from "react-router-dom";
 import { addToCartAsync, selectCartItems } from "../../cart/cartSlice";
 import { toast, Zoom } from "react-toastify";
 
-const products = {
-  name: "Basic Tee 6-Pack",
-  price: "$192",
-  href: "#",
-  breadcrumbs: [
-    { id: 1, name: "Men", href: "#" },
-    { id: 2, name: "Clothing", href: "#" },
-  ],
-  images: [
-    {
-      src: "https://tailwindui.com/img/ecommerce-images/product-page-02-secondary-product-shot.jpg",
-      alt: "Two each of gray, white, and black shirts laying flat.",
-    },
-    {
-      src: "https://tailwindui.com/img/ecommerce-images/product-page-02-tertiary-product-shot-01.jpg",
-      alt: "Model wearing plain black basic tee.",
-    },
-    {
-      src: "https://tailwindui.com/img/ecommerce-images/product-page-02-tertiary-product-shot-02.jpg",
-      alt: "Model wearing plain gray basic tee.",
-    },
-    {
-      src: "https://tailwindui.com/img/ecommerce-images/product-page-02-featured-product-shot.jpg",
-      alt: "Model wearing plain white basic tee.",
-    },
-  ],
-  colors: [
-    {
-      name: "White",
-      checked: true,
-      class: "accent-rose-400",
-      selectedClass: "ring-4 ring-rose-400 ring-offset-2",
-    },
-    {
-      name: "Gray",
-      checked: false,
-      class: "accent-teal-400",
-      selectedClass: "ring-4 ring-teal-400 ring-offset-2",
-    },
-    {
-      name: "Black",
-      checked: false,
-      class: "accent-amber-400",
-      selectedClass: "ring-4 ring-amber-400 ring-offset-2",
-    },
-  ],
-  sizes: [
-    { name: "XXS", inStock: false },
-    { name: "XS", inStock: true },
-    { name: "S", inStock: true },
-    { name: "M", inStock: true },
-    { name: "L", inStock: true },
-    { name: "XL", inStock: true },
-    { name: "2XL", inStock: true },
-    { name: "3XL", inStock: true },
-  ],
-  description:
-    'The Basic Tee 6-Pack allows you to fully express your vibrant personality with three grayscale options. Feeling adventurous? Put on a heather gray tee. Want to be a trendsetter? Try our exclusive colorway: "Black". Need to add an extra pop of color to your outfit? Our white tee has you covered.',
-  highlights: [
-    "Hand cut and sewn locally",
-    "Dyed with our proprietary colors",
-    "Pre-washed & pre-shrunk",
-    "Ultra-soft 100% cotton",
-  ],
-  details:
-    'The 6-Pack includes two black, two white, and two heather gray Basic Tees. Sign up for our subscription service and be the first to get new, exciting colors, like our upcoming "Charcoal Gray" limited release.',
-};
-
 export default function ProductDetails() {
-  const [selectedColor, setSelectedColor] = useState(products.colors[0].name);
+  const [selectedColor, setSelectedColor] = useState([0]);
+  const [selectedSize, setSelectedSize] = useState([0]);
   const [currentIndex, setCurrentIdex] = useState(0);
   const dispatch = useDispatch();
   const product = useSelector(selectProductsById);
@@ -88,7 +21,13 @@ export default function ProductDetails() {
       const newItems = {
         product: product.id,
         quantity: 1,
-      }; 
+      };
+      if (selectedColor) {
+        newItems.color = selectedColor;
+      }
+      if (selectedSize) {
+        newItems.size = selectedSize;
+      }
       dispatch(addToCartAsync(newItems));
       toast.success("item added to Cart", {
         //this needs to be reffered from the backend only
@@ -214,19 +153,29 @@ export default function ProductDetails() {
               <h1 className="text-3xl font-bold mb-5">{product.title}</h1>
               <p className="text-lg font-normal">{product.description}</p>
             </div>
-            <ol className="text-base font-medium list-disc list-inside">
+            <div className="text-base font-medium list-disc list-inside">
               Highlights
-              {products.highlights.map((highlight, highlightIdx) => {
-                return (
-                  <li
-                    key={highlightIdx}
-                    className="text-base font-normal text-gray-700"
-                  >
-                    {highlight}
-                  </li>
-                );
-              })}
-            </ol>
+              <p className="text-base font-normal text-justify text-gray-700">
+                Lorem ipsum dolor sit, amet consectetur adipisicing elit. Amet
+                dolore quibusdam placeat, nostrum blanditiis esse veritatis
+                illo, maxime reiciendis atque non, sunt tenetur inventore facere
+                quo explicabo beatae. Ad qui tempore molestias nostrum iste
+                dolores laborum ex maiores distinctio exercitationem, quidem
+                vitae unde quo cum aut deleniti eum officiis officia enim
+                excepturi, id repellendus mollitia? Ea reprehenderit placeat
+                veniam provident, dolorum, perspiciatis facere dolor odio sit
+                suscipit sequi velit.<br/>  Consequuntur ratione culpa atque magni ea
+                dolor nam, doloribus quibusdam est voluptas enim explicabo
+                recusandae nulla nobis, blanditiis sint esse accusamus
+                necessitatibus non provident a velit harum, aperiam maiores.
+                Ipsam temporibus rerum magni, quas animi laborum amet ex
+                officiis quisquam voluptatem blanditiis laboriosam, hic
+                reiciendis dignissimos veritatis vitae porro ducimus.<br/>  Repellat
+                reiciendis et molestias sapiente esse repellendus illo deleniti
+                ipsam aperiam dolorem consequatur rem, fugit maxime deserunt
+                blanditiis veritatis magnam quae?
+              </p>
+            </div>
             <div className="mt-10">
               <h3 className="text-base font-medium">Details</h3>
               <p className="text-base font-normal text-gray-700">
@@ -237,50 +186,70 @@ export default function ProductDetails() {
 
           {/* color section */}
           <div className="col-span-1 p-3">
-            <h1 className="text-3xl font-normal mb-10">{product.price}</h1>
-            <h3 className="text-base font-medium mb-2">Color</h3>
-            <div className="flex justify-start w-fit mb-10">
-              {products.colors.map((color, colorIdx) => {
-                return (
-                  <div
-                    key={colorIdx}
-                    className={`flex m-3 rounded-full ${
-                      selectedColor ? color.selectedClass : ""
-                    }`}
-                  >
-                    <input
-                      name={color}
-                      value={color.name}
-                      type="radio"
-                      defaultChecked={color.checked}
-                      onChange={(e) => setSelectedColor(e.target.value)}
-                      className={`w-6 h-6 ${selectedColor ? color.class : ""}`}
-                    />
-                  </div>
-                );
-              })}
-            </div>
+            <h1 className="text-3xl font-normal mb-10">
+              &#x20B9; {Math.ceil(product.price * 80).toLocaleString()}
+            </h1>
+            {product.colors && product.colors.length > 0 && (
+              <div>
+                <label htmlFor="colors" className="text-base font-medium mb-2">
+                  Color
+                </label>
+                <div className="flex justify-start w-fit mb-10">
+                  {product.colors.map((color, colorIdx) => {
+                    return (
+                      <div
+                        key={colorIdx}
+                        className={`flex m-3 rounded-full ${
+                          selectedColor ? color.selectedClass : ""
+                        }`}
+                      >
+                        <input
+                          name="colors"
+                          value={color.id}
+                          type="radio"
+                          defaultChecked={color.checked}
+                          onChange={(e) => setSelectedColor(e.target.value)}
+                          className={`w-6 h-6 ${
+                            selectedColor ? color.class : ""
+                          }`}
+                        />
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
 
             {/* size section */}
             <div className="ralative">
-              <h3 className="text-base font-medium mb-2">Size</h3>
-              <div className="flex flex-wrap">
-                {products.sizes.map((size) => {
-                  return (
-                    <div key={size.name}>
-                      <button
-                        className={`w-12 h-12 xl:w-16 xl:h-16 m-2 hover:bg-gray-200 focus:border-blue-700 text-sm font-medium border-2 rounded-full border-dashed border-gray-700 ${
-                          size.inStock === false
-                            ? "cursor-not-allowed line-through opacity-50 hover:bg-transparent focus:border-gray-700 "
-                            : ""
-                        }`}
-                      >
-                        {size.name}
-                      </button>
-                    </div>
-                  );
-                })}
-              </div>
+              {product.sizes && product.sizes.length > 0 && (
+                <div>
+                  <label htmlFor="sizes" className="text-base font-medium mb-2">
+                    Size
+                  </label>
+                  <div className="flex flex-wrap">
+                    {product.sizes.map((size, sizeIdx) => {
+                      return (
+                        <div
+                          key={sizeIdx}
+                          className="flex flex-col justify-center items-center"
+                        >
+                          <input
+                            name="sizes"
+                            value={size.id}
+                            type="radio"
+                            onChange={(e) => {
+                              setSelectedSize(e.target.value);
+                            }}
+                            className="block w-2 h-2 xl:w-5 xl:h-5 m-2 mb-0 hover:bg-gray-200 focus:border-blue-700 text-sm font-medium border-2 rounded-full border-dashed border-gray-700"
+                          />
+                          {size.name}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
               <div className="flex justify-center mt-7 w-full h-12 md:h-14">
                 <button
                   onClick={handleCart}

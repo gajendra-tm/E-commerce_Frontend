@@ -20,6 +20,8 @@ const sortOptions = [
 ];
 
 export default function ProductFilter() {
+  const [openFilter, setOpenFilter] = useState(0);
+  const [selectFilter, setSelectFilter] = useState(false);
   const [filter, setFilter] = useState({});
   const [sort, setSort] = useState({});
   const [page, setPage] = useState(1);
@@ -61,14 +63,16 @@ export default function ProductFilter() {
 
   const handleFilter = (e, section, option) => {
     const newFilter = { ...filter };
-    // need to add multiple categories on server
+    //to add the checked filter value
     if (e.target.checked) {
       if (newFilter[section.id]) {
         newFilter[section.id].push(option.value);
       } else {
         newFilter[section.id] = [option.value];
       }
-    } else {
+    }
+    //to remove the checked value
+    else {
       const index = newFilter[section.id].findIndex(
         (el) => el === option.value
       );
@@ -113,44 +117,70 @@ export default function ProductFilter() {
         </div>
         <div className="flex w-full sm:mt-6">
           <div className="hidden sm:block mr-2 w-40">
-            {filters.map((section) => {
+            {filters.map((section, index) => {
               return (
                 <div
-                  className="flex flex-col border-t-2  overflow-x-hidden h-80 w-40 mb-5"
-                  key={section.id}
+                  className="flex flex-col border-t-2 overflow-x-hidden w-40 p-1"
+                  key={index}
                 >
-                  <span
-                    className="font-medium text-gray-900"
-                    style={{ transformOrigin: "50% 55%" }}
+                  <button
+                    onClick={() => {
+                      setOpenFilter(index);
+                      setSelectFilter(!selectFilter);
+                    }}
+                    className="flex justify-between font-medium text-gray-900"
                   >
                     {section.name}
-                  </span>
-                  <div>
-                    {section.options.map((option, optionIdx) => {
-                      return (
-                        <div
-                          key={option.value}
-                          className="flex justify-start items-center w-40"
-                        >
-                          <input
-                            id={`${section.id}-${optionIdx}`}
-                            name={section.name}
-                            type="checkbox"
-                            defaultValue={option.value}
-                            defaultChecked={option.checked}
-                            onChange={(e) => handleFilter(e, section, option)}
-                            className="h-4 w-4 rounded border-gray-300  focus:ring-2 ring-blue-500 ring-offset-2"
-                          />
-                          <label
-                            htmlFor={`${section.id}-${optionIdx}`}
-                            className="ml-3 text-sm truncate text-gray-600 leading-6 font-normal"
+                    {openFilter === index && !selectFilter  ? (
+                      <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      width="18"
+                      height="18"
+                      fill="currentColor"
+                    >
+                      <path d="M5 11V13H19V11H5Z"></path>
+                    </svg>
+                    ) : (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        width="18"
+                        height="18"
+                        fill="currentColor"
+                      >
+                        <path d="M11 11V5H13V11H19V13H13V19H11V13H5V11H11Z"></path>
+                      </svg>
+                    )}
+                  </button>
+                  {openFilter === index && !selectFilter ? (
+                    <div className="flex flex-col overflow-x-hidden h-80 w-40 mb-5">
+                      {section.options.map((option, optionIdx) => {
+                        return (
+                          <div
+                            key={option.value}
+                            className="flex justify-start items-center w-40"
                           >
-                            {option.label}
-                          </label>
-                        </div>
-                      );
-                    })}
-                  </div>
+                            <input
+                              id={`${section.id}-${optionIdx}`}
+                              name={section.name}
+                              type="checkbox"
+                              defaultValue={option.value}
+                              defaultChecked={option.checked}
+                              onChange={(e) => handleFilter(e, section, option)}
+                              className="h-4 w-4 rounded border-gray-300  focus:ring-2 ring-blue-500 ring-offset-2"
+                            />
+                            <label
+                              htmlFor={`${section.id}-${optionIdx}`}
+                              className="ml-3 text-sm truncate text-gray-600 leading-6 font-normal"
+                            >
+                              {option.label}
+                            </label>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  ) : null}
                 </div>
               );
             })}

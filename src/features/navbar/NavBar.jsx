@@ -248,7 +248,7 @@ export default function NavBar({ children }) {
                   />
                 </svg>
               </button>
-              <div className="flex justify-start absolute px-4 top-9 -right-11 bg-gray-800 shadow-lg text-white text-lg leading-10 font-medium w-48 min-h-full">
+              {isOpen && <div className="flex justify-start absolute px-4 top-9 -right-11 bg-gray-800 shadow-lg text-white text-lg leading-10 font-medium w-48 min-h-full">
                 <ul>
                   {navLists.map((navList) =>
                     navList[userInfo.role] ? (
@@ -258,7 +258,7 @@ export default function NavBar({ children }) {
                     ) : null
                   )}
                 </ul>
-              </div>
+              </div>}
             </div>
           </nav>
           <header className="  px-2 shadow-xl mt-14 border-b-2 border-gray-400 sm:mt-20 h-9 sm:h-11 flex">

@@ -34,51 +34,18 @@ function useSortAnimation(sortIsOpen) {
         delay: sortIsOpen ? staggerMobileItems : 0,
       }
     );
-  }, [sortIsOpen]);
+  }, [sortIsOpen,animate]);
 
   return sortscope;
 }
 
-//filter animation
-// function useFilterAnimation(filterIsOpen) {
-//   const [filterscope, animate] = useAnimate();
-
-//   useEffect(() => {
-//     animate(
-//       "#filter_animation",
-//       {
-//         clipPath: filterIsOpen
-//           ? "inset(0% 0% 0% 0% round 10px)"
-//           : "inset(100% 0% 0% 0% round 0px)",
-//       },
-//       {
-//         type: "spring",
-//         bounce: 0,
-//         duration: 0.5,
-//       }
-//     );
-
-//     animate(
-//       "input,label",
-//       filterIsOpen
-//         ? { opacity: 1, scale: 1, filter: "blur(0px)" }
-//         : { opacity: 0, scale: 0.3, filter: "blur(20px)" },
-//       {
-//         duration: 0.2,
-//         delay: filterIsOpen ? staggerMobileItems : 0,
-//       }
-//     );
-//   }, [filterIsOpen]);
-
-//   return filterscope;
-// }
-
 export default function AdminProductFilterMobile({ propsList }) {
+  const [openFilter, setOpenFilter] = useState(0);
+  const [selectFilter, setSelectFilter] = useState(false);
   const [sortIsOpen, setSortIsOpen] = useState(false);
   const [filterIsOpen, setFilterIsOpen] = useState(false);
 
   const sortscope = useSortAnimation(sortIsOpen);
-  // const filterscope = useFilterAnimation(filterIsOpen);
 
   return (
     <>
@@ -135,17 +102,10 @@ export default function AdminProductFilterMobile({ propsList }) {
               })}
             </ul>
           </div>
-          {/* ref={filterscope} */}
           <div className="inline-block" >
             <div className="ml-0 sm:ml-48"
                 onClick={() => setFilterIsOpen(!filterIsOpen)}
                 >
-                  {/* there is an issue with framer animation which needs to be corrected later */}
-              {/* <motion.button
-                whileTap={{ scale: 0.97 }}
-                className="text-base sm:text-xl"
-                onClick={() => setFilterIsOpen(!filterIsOpen)}
-              > */}
                 Filter
                 <svg
                   className="inline ml-1"
@@ -157,14 +117,9 @@ export default function AdminProductFilterMobile({ propsList }) {
                 >
                   <path d="M21 4V6H20L15 13.5V22H9V13.5L4 6H3V4H21ZM6.4037 6L11 12.8944V20H13V12.8944L17.5963 6H6.4037Z"></path>
                 </svg>
-              {/* </motion.button> */}
             </div>
 
            { filterIsOpen ? <div
-              // style={{
-              //   pointerEvents: filterIsOpen ? "auto" : "none",
-              //   clipPath: "inset(10% 50% 90% 50% round 10px)",
-              // }}
               id="filter_animation"
               className="absolute bottom-0 left-0 h-screen overflow-x-auto p-1  bg-gray-800 w-full text-white"
             >
@@ -179,16 +134,43 @@ export default function AdminProductFilterMobile({ propsList }) {
                   <path d="M12.0007 10.5865L16.9504 5.63672L18.3646 7.05093L13.4149 12.0007L18.3646 16.9504L16.9504 18.3646L12.0007 13.4149L7.05093 18.3646L5.63672 16.9504L10.5865 12.0007L5.63672 7.05093L7.05093 5.63672L12.0007 10.5865Z"></path>
                 </svg>
               </span>
-              {propsList.filters.map((section) => {
+              {propsList.filters.map((section, index) => {
                 return (
-                  <span
-                    className="flex flex-col px-9 w-full mb-5"
-                    key={section.id}
+                  <div
+                    className="flex flex-col px-9 w-full overflow-x-hidden p-1"
+                    key={index}
                   >
-                    <span className="font-medium border-t-2 border-gray-300 text-gray-200">
+                    <button
+                     onClick={() => {
+                      setOpenFilter(index);
+                      setSelectFilter(!selectFilter);
+                    }}
+                     className="flex justify-between  font-medium border-t-2 border-gray-300 text-gray-200">
                       {section.name}
-                    </span>
-                    <div>
+                      {openFilter === index && !selectFilter  ? (
+                      <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      width="18"
+                      height="18"
+                      fill="currentColor"
+                    >
+                      <path d="M5 11V13H19V11H5Z"></path>
+                    </svg>
+                    ) : (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        width="18"
+                        height="18"
+                        fill="currentColor"
+                      >
+                        <path d="M11 11V5H13V11H19V13H13V19H11V13H5V11H11Z"></path>
+                      </svg>
+                    )}
+                    </button>
+                    {openFilter === index && !selectFilter ? (
+                    <div className="flex flex-col overflow-x-hidden h-80 w-40 mb-5">
                       {section.options.map((option, optionIdx) => {
                         return (
                           <div
@@ -216,11 +198,11 @@ export default function AdminProductFilterMobile({ propsList }) {
                           </div>
                         );
                       })}
-                    </div>
-                  </span>
+                    </div>):null}
+                  </div>
                 );
               })}
-            </div>:""}
+            </div>:null}
           </div>
         </div>
       </div>

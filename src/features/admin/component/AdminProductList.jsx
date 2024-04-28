@@ -5,7 +5,7 @@ export default function AdminProductList({ product }) {
   return (
     <>
       <div>
-        <div className="w-44 md:w-52 lg:w-48 xl:w-56 mb-2 md:mx-2 lg:mx-1 xl:mx-2 box-content p-1 border-2 rounded-sm hover:opacity-90 ">
+        <div className="w-44 h-fit md:w-52 lg:w-44 xl:w-52 mb-2 sm:ml-3 md:mx-2 lg:mx-1 xl:mx-2 box-content p-1 border-2 rounded-sm hover:opacity-90 ">
           <Link to={`/product-details/${product.id}`}>
             <div className="w-full h-44 lg:w-full lg:h-56 mb-4">
               <img
@@ -14,13 +14,17 @@ export default function AdminProductList({ product }) {
                 alt={product.title}
               />
             </div>
-            <div className="flex justify-between">
+            <div>
               <h3 className="text-sm truncate lg:text-base">{product.title}</h3>
+              <div className="flex flex-col items-end">
               <p className="text-sm lg:text-base font-medium">
-                ${product.price}
+              &#x20B9; {Math.ceil(product.price*80).toLocaleString()}
               </p>
+              </div>
             </div>
-              <p className="text-sm lg:text-base">{product.rating}</p>
+            <div className="flex justify-end">
+              <p className="text-sm lg:text-base">Rating: {product.rating}</p>
+              </div>
             <div className="flex justify-between">
               {product.deleted &&
               <p className="text-sm lg:text-base text-red-600 bg-red-200 rounded-md px-2">

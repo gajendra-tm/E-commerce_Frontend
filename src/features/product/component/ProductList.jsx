@@ -13,11 +13,15 @@ export default function ProductList({product}) {
             alt={product.title}
             />
         </div>
-        <div className="flex justify-between">
+        <div>
           <h3 className="text-sm truncate lg:text-base">{product.title}</h3>
-          <p className="text-sm lg:text-base font-medium">${product.price}</p>
+          <div className="flex flex-col items-end">
+          <p className="text-sm lg:text-base font-medium">&#x20B9; {Math.ceil(product.price*80).toLocaleString()}</p>
+          </div>
         </div>
-        <p className="text-sm lg:text-base">{product.rating}</p>
+        <div className="flex justify-end">
+        <p className="text-sm lg:text-base">Rating: {product.rating}</p>
+        </div>
         </Link>
       </div>
     </>

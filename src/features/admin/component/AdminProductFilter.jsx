@@ -21,6 +21,8 @@ const sortOptions = [
 ];
 
 export default function AdminProductFilter() {
+  const [openFilter, setOpenFilter] = useState(0);
+  const [selectFilter, setSelectFilter] = useState(false);
   const [filter, setFilter] = useState({});
   const [sort, setSort] = useState({});
   const [page, setPage] = useState(1);
@@ -108,16 +110,44 @@ export default function AdminProductFilter() {
         </div>
         <div className="flex w-full sm:mt-6">
           <div className="hidden sm:block mr-2 w-40">
-            {filters.map((section) => {
+            {filters.map((section,index) => {
               return (
                 <div
-                  className="flex flex-col border-t-2  overflow-x-hidden h-80 w-40 mb-5"
-                  key={section.id}
+                  className="flex flex-col border-t-2 overflow-x-hidden w-40 p-1"
+                  key={index}
                 >
-                  <span className="font-medium text-gray-900">
+                   <button
+                    onClick={() => {
+                      setOpenFilter(index);
+                      setSelectFilter(!selectFilter);
+                    }}
+                    className="flex justify-between font-medium text-gray-900"
+                  >
                     {section.name}
-                  </span>
-                  <div>
+                    {openFilter === index && !selectFilter  ? (
+                      <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      width="18"
+                      height="18"
+                      fill="currentColor"
+                    >
+                      <path d="M5 11V13H19V11H5Z"></path>
+                    </svg>
+                    ) : (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        width="18"
+                        height="18"
+                        fill="currentColor"
+                      >
+                        <path d="M11 11V5H13V11H19V13H13V19H11V13H5V11H11Z"></path>
+                      </svg>
+                    )}
+                  </button>
+                  {openFilter === index && !selectFilter ? ( 
+                  <div className="flex flex-col overflow-x-hidden h-80 w-40 mb-5">
                     {section.options.map((option, optionIdx) => {
                       return (
                         <div
@@ -142,7 +172,7 @@ export default function AdminProductFilter() {
                         </div>
                       );
                     })}
-                  </div>
+                  </div>) : null}
                 </div>
               );
             })}

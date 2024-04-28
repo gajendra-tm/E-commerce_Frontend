@@ -58,7 +58,7 @@ export default function CheckoutForm() {
       elements,
       confirmParams: {
         // Make sure to change this to your payment completion page
-        return_url: "https://e-commerce-one-sandy-54.vercel.app//order-successful-online",
+        return_url: "https://e-commerce-one-sandy-54.vercel.app/order-successful-online",
       },
     });
 

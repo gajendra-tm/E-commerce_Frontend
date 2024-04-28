@@ -28,6 +28,41 @@ export default function AdminProductForm() {
     formState: { errors },
   } = useForm();
 
+  const colors = [
+    {
+      id:"red",
+      name: "Red",
+      checked: true,
+      class: "accent-rose-400",
+      selectedClass: "ring-4 ring-rose-400 ring-offset-2",
+    },
+    {
+      id:"blue",
+      name: "Blue",
+      checked: false,
+      class: "accent-teal-400",
+      selectedClass: "ring-4 ring-teal-400 ring-offset-2",
+    },
+    {
+      id:"yellow",
+      name: "Yellow",
+      checked: false,
+      class: "accent-amber-400",
+      selectedClass: "ring-4 ring-amber-400 ring-offset-2",
+    },
+  ];
+
+  const sizes = [
+    { name: "XXS", inStock: false,id:"XXS" },
+    { name: "XS", inStock: true ,id:"XS" },
+    { name: "S", inStock: true,id:"S"  },
+    { name: "M", inStock: true ,id:"M" },
+    { name: "L", inStock: true ,id:"L" },
+    { name: "XL", inStock: true,id:"XL"  },
+    { name: "2XL", inStock: true,id:"2XL"  },
+    { name: "3XL", inStock: true ,id:"3XL" },
+  ];
+
   useEffect(() => {
     if (params.id) {
       dispatch(fetchProductsByIdAsync(params.id));
@@ -50,6 +85,8 @@ export default function AdminProductForm() {
       setValue("image2", selectedProducts.images[1]);
       setValue("image3", selectedProducts.images[2]);
       setValue("image4", selectedProducts.images[3]);
+      setValue("colors", selectedProducts.colors.map((color)=>color.id));
+      setValue("sizes", selectedProducts.sizes.map((size)=>size.id));
     }
   }, [selectedProducts, params.id, setValue]);
 
@@ -73,12 +110,15 @@ export default function AdminProductForm() {
               product.image3,
               product.image4,
             ];
-            product.rating = 0;
+            product.rating = 1;
             delete product["image1"];
             delete product["image2"];
             delete product["image3"];
             delete product["image4"];
-            product.price = +product.price; //to convert from string to number
+            //to update color and size details in database
+            product.colors = product.colors.map(color => colors.find(clr=>clr.id === color));
+            product.sizes = product.sizes.map(size =>sizes.find(sz=>sz.id === size));
+            product.price = +product.price; // Unary Plus operator, to convert from string to number
             product.stock = +product.stock;
             product.discountPercentage = +product.discountPercentage;
 
@@ -175,6 +215,44 @@ export default function AdminProductForm() {
                     );
                   })}
                 </select>
+              </div>
+              <div className="text-sm sm:text-base text-gray-500 mb-5">
+                <label htmlFor="colors">Colors</label>
+                <div className="flex space-x-3">
+                  {colors.map((color) => {
+                    return (
+                      <div key={color.id}>
+                        <input
+                        name="colors"
+                          type="checkbox"
+                          {...register("colors", {
+                          })}
+                          value={color.id}
+                        />{" "}
+                        {color.name}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+              <div className="text-sm sm:text-base text-gray-500 mb-5">
+                <label htmlFor="sizes">Sizes</label>
+                <div className="flex space-x-3">
+                  {sizes.map((size) => {
+                    return (
+                      <div key={size.id}>
+                        <input
+                        name="sizes"
+                          type="checkbox"
+                          {...register("sizes", {
+                          })}
+                          value={size.id}
+                        />{" "}
+                        {size.name}
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
             </div>
             <div className="grid grid-cols-3">

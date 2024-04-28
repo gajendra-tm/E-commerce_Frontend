@@ -79,7 +79,7 @@ const productSlice = createSlice({
         state.status = "Loading";
       })
       .addCase(fetchProductsByFiltersAsync.fulfilled, (state, action) => {
-        state.status = "idle";
+        state.status = "Successful";
         state.products = action.payload.products;
         state.totalItems = action.payload.totalItems;
       })
@@ -88,7 +88,7 @@ const productSlice = createSlice({
         state.status = "Loading";
       })
       .addCase(fetchBrandsAsync.fulfilled, (state, action) => {
-        state.status = "idle";
+        state.status = "Successful";
         state.brands = action.payload;
       })
 
@@ -96,7 +96,7 @@ const productSlice = createSlice({
         state.status = "Loading";
       })
       .addCase(fetchCategoriesAsync.fulfilled, (state, action) => {
-        state.status = "idle";
+        state.status = "Successful";
         state.categories = action.payload;
       })
 
@@ -104,21 +104,21 @@ const productSlice = createSlice({
         state.status = "Loading";
       })
       .addCase(fetchProductsByIdAsync.fulfilled, (state, action) => {
-        state.status = "Loading";
+        state.status = "Successful";
         state.productsById = action.payload;
       })
       .addCase(createProductAsync.pending, (state) => {
         state.status = "Loading";
       })
       .addCase(createProductAsync.fulfilled, (state, action) => {
-        state.status = "Loading";
+        state.status = "Successful";
         state.products.push(action.payload);
       })
       .addCase(updateProductAsync.pending, (state) => {
         state.status = "Loading";
       })
       .addCase(updateProductAsync.fulfilled, (state, action) => {
-        state.status = "Loading";
+        state.status = "Successful";
         const index = state.products.findIndex(
           (product) => product.id === action.payload.id
         );
